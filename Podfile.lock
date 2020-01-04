@@ -1,0 +1,22 @@
+PODS:
+  - RevealingSplashView (0.6.0)
+  - SDWebImage (5.4.0):
+    - SDWebImage/Core (= 5.4.0)
+  - SDWebImage/Core (5.4.0)
+
+DEPENDENCIES:
+  - RevealingSplashView
+  - SDWebImage (~> 5.0)
+
+SPEC REPOS:
+  trunk:
+    - RevealingSplashView
+    - SDWebImage
+
+SPEC CHECKSUMS:
+  RevealingSplashView: 40c5a770894459736acdc95655eeba0dd30ce91c
+  SDWebImage: 5bf6aec6481ae2a062bdc59f9d6c1d1e552090e0
+
+PODFILE CHECKSUM: 9c2777d4752ff1d57cddb84f0b9e5d2e93ccb554
+
+COCOAPODS: 1.8.4

@@ -3,29 +3,45 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		038A8920E3426C619179B4C5 /* Pods_Filmey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9262210CEA1D294E72957E8 /* Pods_Filmey.framework */; };
 		76470F6223BFCE5A004EF4B2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76470F6123BFCE5A004EF4B2 /* AppDelegate.swift */; };
 		76470F6423BFCE5A004EF4B2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76470F6323BFCE5A004EF4B2 /* SceneDelegate.swift */; };
-		76470F6623BFCE5A004EF4B2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76470F6523BFCE5A004EF4B2 /* ViewController.swift */; };
+		76470F6623BFCE5A004EF4B2 /* StartVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76470F6523BFCE5A004EF4B2 /* StartVC.swift */; };
 		76470F6923BFCE5A004EF4B2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 76470F6723BFCE5A004EF4B2 /* Main.storyboard */; };
 		76470F6C23BFCE5A004EF4B2 /* Filmey.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 76470F6A23BFCE5A004EF4B2 /* Filmey.xcdatamodeld */; };
 		76470F6E23BFCE5C004EF4B2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 76470F6D23BFCE5C004EF4B2 /* Assets.xcassets */; };
 		76470F7123BFCE5C004EF4B2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 76470F6F23BFCE5C004EF4B2 /* LaunchScreen.storyboard */; };
+		76470F7B23BFE5C0004EF4B2 /* FavoriteVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76470F7A23BFE5C0004EF4B2 /* FavoriteVC.swift */; };
+		76470F7D23BFE5E6004EF4B2 /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76470F7C23BFE5E6004EF4B2 /* HomeVC.swift */; };
+		76470F7F23BFF6CC004EF4B2 /* moviesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76470F7E23BFF6CC004EF4B2 /* moviesCell.swift */; };
+		76470F8123C08654004EF4B2 /* constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76470F8023C08654004EF4B2 /* constants.swift */; };
+		76470F8323C08F85004EF4B2 /* movieModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76470F8223C08F85004EF4B2 /* movieModel.swift */; };
+		76470F8523C08FE4004EF4B2 /* MoviesServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76470F8423C08FE4004EF4B2 /* MoviesServices.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		12BC762BD9053051C016DE99 /* Pods-Filmey.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Filmey.debug.xcconfig"; path = "Target Support Files/Pods-Filmey/Pods-Filmey.debug.xcconfig"; sourceTree = "<group>"; };
+		6AEDD85D4B50DA2BE2963288 /* Pods-Filmey.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Filmey.release.xcconfig"; path = "Target Support Files/Pods-Filmey/Pods-Filmey.release.xcconfig"; sourceTree = "<group>"; };
 		76470F5E23BFCE5A004EF4B2 /* Filmey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Filmey.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		76470F6123BFCE5A004EF4B2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		76470F6323BFCE5A004EF4B2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		76470F6523BFCE5A004EF4B2 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		76470F6523BFCE5A004EF4B2 /* StartVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartVC.swift; sourceTree = "<group>"; };
 		76470F6823BFCE5A004EF4B2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		76470F6B23BFCE5A004EF4B2 /* Filmey.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Filmey.xcdatamodel; sourceTree = "<group>"; };
 		76470F6D23BFCE5C004EF4B2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		76470F7023BFCE5C004EF4B2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		76470F7223BFCE5C004EF4B2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		76470F7A23BFE5C0004EF4B2 /* FavoriteVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteVC.swift; sourceTree = "<group>"; };
+		76470F7C23BFE5E6004EF4B2 /* HomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeVC.swift; sourceTree = "<group>"; };
+		76470F7E23BFF6CC004EF4B2 /* moviesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = moviesCell.swift; sourceTree = "<group>"; };
+		76470F8023C08654004EF4B2 /* constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = constants.swift; sourceTree = "<group>"; };
+		76470F8223C08F85004EF4B2 /* movieModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = movieModel.swift; sourceTree = "<group>"; };
+		76470F8423C08FE4004EF4B2 /* MoviesServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesServices.swift; sourceTree = "<group>"; };
+		D9262210CEA1D294E72957E8 /* Pods_Filmey.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Filmey.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,6 +49,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				038A8920E3426C619179B4C5 /* Pods_Filmey.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,6 +61,8 @@
 			children = (
 				76470F6023BFCE5A004EF4B2 /* Filmey */,
 				76470F5F23BFCE5A004EF4B2 /* Products */,
+				C5C01C11E086E144ABF9BE6C /* Pods */,
+				F5E35D3B80C66199C5C87C3E /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,16 +77,39 @@
 		76470F6023BFCE5A004EF4B2 /* Filmey */ = {
 			isa = PBXGroup;
 			children = (
+				76470F8223C08F85004EF4B2 /* movieModel.swift */,
 				76470F6123BFCE5A004EF4B2 /* AppDelegate.swift */,
 				76470F6323BFCE5A004EF4B2 /* SceneDelegate.swift */,
-				76470F6523BFCE5A004EF4B2 /* ViewController.swift */,
+				76470F6523BFCE5A004EF4B2 /* StartVC.swift */,
 				76470F6723BFCE5A004EF4B2 /* Main.storyboard */,
 				76470F6D23BFCE5C004EF4B2 /* Assets.xcassets */,
 				76470F6F23BFCE5C004EF4B2 /* LaunchScreen.storyboard */,
 				76470F7223BFCE5C004EF4B2 /* Info.plist */,
 				76470F6A23BFCE5A004EF4B2 /* Filmey.xcdatamodeld */,
+				76470F7A23BFE5C0004EF4B2 /* FavoriteVC.swift */,
+				76470F7C23BFE5E6004EF4B2 /* HomeVC.swift */,
+				76470F7E23BFF6CC004EF4B2 /* moviesCell.swift */,
+				76470F8023C08654004EF4B2 /* constants.swift */,
+				76470F8423C08FE4004EF4B2 /* MoviesServices.swift */,
 			);
 			path = Filmey;
+			sourceTree = "<group>";
+		};
+		C5C01C11E086E144ABF9BE6C /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				12BC762BD9053051C016DE99 /* Pods-Filmey.debug.xcconfig */,
+				6AEDD85D4B50DA2BE2963288 /* Pods-Filmey.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		F5E35D3B80C66199C5C87C3E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D9262210CEA1D294E72957E8 /* Pods_Filmey.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -77,9 +119,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 76470F7523BFCE5C004EF4B2 /* Build configuration list for PBXNativeTarget "Filmey" */;
 			buildPhases = (
+				96D7A81565C56F2E599ADF0F /* [CP] Check Pods Manifest.lock */,
 				76470F5A23BFCE5A004EF4B2 /* Sources */,
 				76470F5B23BFCE5A004EF4B2 /* Frameworks */,
 				76470F5C23BFCE5A004EF4B2 /* Resources */,
+				8FD7C76D9B1332DD7D8E7624 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -136,15 +180,63 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		8FD7C76D9B1332DD7D8E7624 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Filmey/Pods-Filmey-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Filmey/Pods-Filmey-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Filmey/Pods-Filmey-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		96D7A81565C56F2E599ADF0F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Filmey-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		76470F5A23BFCE5A004EF4B2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				76470F6623BFCE5A004EF4B2 /* ViewController.swift in Sources */,
+				76470F6623BFCE5A004EF4B2 /* StartVC.swift in Sources */,
 				76470F6C23BFCE5A004EF4B2 /* Filmey.xcdatamodeld in Sources */,
+				76470F8323C08F85004EF4B2 /* movieModel.swift in Sources */,
+				76470F8523C08FE4004EF4B2 /* MoviesServices.swift in Sources */,
 				76470F6223BFCE5A004EF4B2 /* AppDelegate.swift in Sources */,
+				76470F7F23BFF6CC004EF4B2 /* moviesCell.swift in Sources */,
+				76470F7D23BFE5E6004EF4B2 /* HomeVC.swift in Sources */,
+				76470F7B23BFE5C0004EF4B2 /* FavoriteVC.swift in Sources */,
 				76470F6423BFCE5A004EF4B2 /* SceneDelegate.swift in Sources */,
+				76470F8123C08654004EF4B2 /* constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -286,6 +378,7 @@
 		};
 		76470F7623BFCE5C004EF4B2 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 12BC762BD9053051C016DE99 /* Pods-Filmey.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -304,6 +397,7 @@
 		};
 		76470F7723BFCE5C004EF4B2 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6AEDD85D4B50DA2BE2963288 /* Pods-Filmey.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
