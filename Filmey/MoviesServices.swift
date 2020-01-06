@@ -8,10 +8,10 @@
 
 import Foundation
 class MoviesServices{
-    var nowPlayingArr = [movieModel]()
-    var topRatedArr = [movieModel]()
-    var mostPopularArr = [movieModel]()
-    func nowPlayingData(completion: @escaping (_ jsonData: [movieModel],_ error:Error?) -> Void) {
+    var nowPlayingArr = [MovieModel]()
+    var topRatedArr = [MovieModel]()
+    var mostPopularArr = [MovieModel]()
+    func nowPlayingData(completion: @escaping (_ jsonData: [MovieModel],_ error:Error?) -> Void) {
         let url = URL(string: "https://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)&language=en-US&page=1"
         )
         let request = URLRequest(url: url!)
@@ -24,7 +24,7 @@ class MoviesServices{
                 for i in 0..<result.count
                 {
                     let dic = result[i]
-                    self.nowPlayingArr.append(movieModel(original_title: dic["original_title"] as! String, poster_path: dic["poster_path"] as! String, overview: dic["overview"] as! String , release_date: dic["release_date"] as! String, vote_average: dic["vote_average"] as! Double, id: dic["id"] as! Int))
+                    self.nowPlayingArr.append(MovieModel(original_title: dic["original_title"] as! String, poster_path: dic["poster_path"] as! String, overview: dic["overview"] as! String , release_date: dic["release_date"] as! String, vote_average: dic["vote_average"] as! Double, id: dic["id"] as! Int))
                 }
                 
                 completion(self.nowPlayingArr,nil)
@@ -41,7 +41,7 @@ class MoviesServices{
         task.resume()
     }
     
-    func topRatedData(completion: @escaping (_ jsonData: [movieModel],_ error:Error?) -> Void)
+    func topRatedData(completion: @escaping (_ jsonData: [MovieModel],_ error:Error?) -> Void)
     {
         let url = URL(string: "https://api.themoviedb.org/3/movie/top_rated?api_key=\(apiKey)&language=en-US&page=1"
         )
@@ -55,7 +55,7 @@ class MoviesServices{
                 for i in 0..<result.count
                 {
                     let dic = result[i]
-                    self.topRatedArr.append(movieModel(original_title: dic["original_title"] as! String, poster_path: dic["poster_path"] as! String, overview: dic["overview"] as! String , release_date: dic["release_date"] as! String, vote_average: dic["vote_average"] as! Double, id: dic["id"] as! Int))
+                    self.topRatedArr.append(MovieModel(original_title: dic["original_title"] as! String, poster_path: dic["poster_path"] as! String, overview: dic["overview"] as! String , release_date: dic["release_date"] as! String, vote_average: dic["vote_average"] as! Double, id: dic["id"] as! Int))
                 }
                 
                 completion(self.topRatedArr,nil)
@@ -71,7 +71,7 @@ class MoviesServices{
         task.resume()
         
     }
-    func mostPopularData(completion: @escaping (_ jsonData: [movieModel],_ error:Error?) -> Void)
+    func mostPopularData(completion: @escaping (_ jsonData: [MovieModel],_ error:Error?) -> Void)
        {
            let url = URL(string: "https://api.themoviedb.org/3/movie/popular?api_key=\(apiKey)&language=en-US&page=1"
            )
@@ -85,7 +85,7 @@ class MoviesServices{
                    for i in 0..<result.count
                    {
                        let dic = result[i]
-                       self.mostPopularArr.append(movieModel(original_title: dic["original_title"] as! String, poster_path: dic["poster_path"] as! String, overview: dic["overview"] as! String , release_date: dic["release_date"] as! String, vote_average: dic["vote_average"] as! Double, id: dic["id"] as! Int))
+                       self.mostPopularArr.append(MovieModel(original_title: dic["original_title"] as! String, poster_path: dic["poster_path"] as! String, overview: dic["overview"] as! String , release_date: dic["release_date"] as! String, vote_average: dic["vote_average"] as! Double, id: dic["id"] as! Int))
                    }
                    
                    completion(self.mostPopularArr,nil)

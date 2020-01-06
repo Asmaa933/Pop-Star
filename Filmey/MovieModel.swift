@@ -7,7 +7,7 @@
 //
 
 import Foundation
-class movieModel{
+class MovieModel{
     let original_title : String
 	let poster_path : String
 	let overview : String

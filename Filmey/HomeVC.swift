@@ -9,17 +9,18 @@
 import UIKit
 import SDWebImage
 
-class HomeVC: UIViewController,UITabBarDelegate {
+class HomeVC: UIViewController,UITabBarControllerDelegate{
 
     @IBOutlet weak var changeView: UIView!
     @IBOutlet weak var collectionView: UICollectionView!
     let service = MoviesServices()
-    var nowplayingArr = [movieModel]()
-    var topRatedArr = [movieModel]()
-    var mostPopularArr  = [movieModel]()
+    var nowplayingArr = [MovieModel]()
+    var topRatedArr = [MovieModel]()
+    var mostPopularArr  = [MovieModel]()
+    var selectMovie: MovieModel?
 
     var arrayNum = 1
-    var arr = [movieModel]()
+    var arr = [MovieModel]()
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -84,7 +85,19 @@ class HomeVC: UIViewController,UITabBarDelegate {
     func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         self.viewWillAppear(true)
     }
-    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if (segue.identifier == "movieSegue")
+        {
+            if let detail = segue.destination as? MovieDetailsVC
+            {
+                detail.selectedMovie = self.selectMovie
+            }
+        }
+    }
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        viewWillAppear(true)
+    }
+
 }
 extension HomeVC : UICollectionViewDelegate,UICollectionViewDataSource
 {
@@ -111,6 +124,10 @@ extension HomeVC : UICollectionViewDelegate,UICollectionViewDataSource
         }
         cell.movieImg?.sd_setImage(with: URL(string: "https://image.tmdb.org/t/p/w185/\(arr[indexPath.row].poster_path)"), placeholderImage: UIImage(named: "popcorn"),completed: nil)
         return cell
+    }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        selectMovie = arr[indexPath.row]
+              performSegue(withIdentifier: "movieSegue", sender: nil)
     }
     
     

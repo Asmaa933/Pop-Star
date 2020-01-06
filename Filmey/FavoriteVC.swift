@@ -7,24 +7,52 @@
 //
 
 import UIKit
+import SDWebImage
 
-class FavoriteVC: UIViewController {
+class FavoriteVC: UIViewController,UITabBarControllerDelegate {
 
+    @IBOutlet weak var favTable: UITableView!
+    var favouriteArr = [FavouriteMovies]()
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        let nib = UINib(nibName: "favouriteCell", bundle: nil)
+        favTable.register(nib, forCellReuseIdentifier: "favCell")
+        favTable.tableFooterView = UIView()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        favouriteArr = CoreDataHandler.getDataFromCoreData() ?? []
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+        favTable.reloadData()
     }
-    */
-
+    
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        viewWillAppear(true)
+    }
+}
+extension FavoriteVC: UITableViewDelegate,UITableViewDataSource
+{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        favouriteArr.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "favCell") as? favouriteCell else{
+            print("can't get")
+            return UITableViewCell()
+        }
+        cell.titleLabel.text = favouriteArr[indexPath.row].original_title
+        cell.releaseLabel.text = favouriteArr[indexPath.row].release_date
+        cell.rateLabel.text = "⭐️ \(favouriteArr[indexPath.row].vote_average)"
+        cell.movieImg?.sd_setImage(with: URL(string: "https://image.tmdb.org/t/p/w185/\(favouriteArr[indexPath.row].poster_path ?? "")"), placeholderImage: UIImage(named: "popcorn"),completed: nil)
+        
+        return cell
+    }
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete{
+       favouriteArr = CoreDataHandler.deleteObjectFromCoreData(movieItem: favouriteArr[indexPath.row]) ?? []
+            tableView.deleteRows(at: [indexPath], with: .fade)
+        }
+    }
+    
 }

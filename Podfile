@@ -8,4 +8,5 @@ target 'Filmey' do
   # Pods for Filmey
 pod 'RevealingSplashView'
 pod 'SDWebImage', '~> 5.0'
+pod 'Cosmos', '~> 20.0'
 end
