@@ -141,7 +141,7 @@
                                 <rect key="frame" x="2" y="56" width="412" height="703"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                                <collectionViewLayout key="collectionViewLayout" id="nSX-Qm-gWA" customClass="PinterestLayout" customModule="Filmey" customModuleProvider="target"/>
+                                <collectionViewLayout key="collectionViewLayout" id="AFw-oz-BPI" customClass="PinterestLayout" customModule="Filmey" customModuleProvider="target"/>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="cell" id="TZu-W6-atg" customClass="moviesCell" customModule="Filmey" customModuleProvider="target">
                                         <rect key="frame" x="90.666666666666671" y="0.0" width="231" height="250"/>
@@ -267,7 +267,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="t7t-WM-Khb">
-                                <rect key="frame" x="201" y="300" width="167" height="43"/>
+                                <rect key="frame" x="201" y="300" width="193" height="43"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="+  Add to favourites"/>
                                 <connections>

@@ -51,19 +51,20 @@ class CoreDataHandler {
             return CoreDataHandler.getDataFromCoreData()
         }
     
-    class func checkforSpecificItemFromCoreData(movieID: Int) -> Bool{
-           var movie = [FavouriteMovies]()
+    class func checkforSpecificItemFromCoreData(movieID: Int64) -> [FavouriteMovies]{
+           var movies = [FavouriteMovies]()
            let context = CoreDataHandler.getCoreDataobject()
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: FavouriteMovies.entity().name ?? "")
-           request.predicate = NSPredicate(format: "id = \(Int64(movieID))")
+           request.predicate = NSPredicate(format: "id = \(movieID)")
            do{
-               movie =  try  context.fetch(request) as? [FavouriteMovies] ?? []
-           }catch(let error){
-               print(error.localizedDescription)
+               movies =  try  context.fetch(request) as? [FavouriteMovies] ?? []
+           }catch{
+               print("error in search")
            }
-        return !movie.isEmpty
+        return movies
            
        }
+    
 }
 
     

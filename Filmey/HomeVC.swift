@@ -23,11 +23,11 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
     var arr = [MovieModel]()
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        getData()
+
         }
     override func viewWillAppear(_ animated: Bool) {
-                getData()
-
+        collectionView.reloadData()
     }
       func getData()
       {
@@ -99,7 +99,7 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
     }
 
 }
-extension HomeVC : UICollectionViewDelegate,UICollectionViewDataSource
+extension HomeVC : UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout
 {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch arrayNum {
@@ -130,5 +130,9 @@ extension HomeVC : UICollectionViewDelegate,UICollectionViewDataSource
               performSegue(withIdentifier: "movieSegue", sender: nil)
     }
     
-    
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+return CGSize(width: 200, height: 200)
+        
+    }
+
 }

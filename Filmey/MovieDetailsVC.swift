@@ -21,6 +21,7 @@ class MovieDetailsVC: UIViewController {
     @IBOutlet weak var trailersTable: UITableView!
     @IBOutlet weak var rateLabel: UILabel!
     @IBOutlet weak var starsCosmos: CosmosView!
+    var isFavourite = false
     var selectedMovie: MovieModel!
     var trailer = TrailerServices()
     var trailersArr = [TrailerData]()
@@ -28,7 +29,7 @@ class MovieDetailsVC: UIViewController {
         super.viewDidLoad()
         getTrailers()
         trailersTable.tableFooterView = UIView()
-  
+        
     }
     override func viewWillAppear(_ animated: Bool)
     {
@@ -48,7 +49,7 @@ class MovieDetailsVC: UIViewController {
             
         }
         checkIsFavourite()
-
+        
     }
     func getTrailers()
     {
@@ -73,41 +74,62 @@ class MovieDetailsVC: UIViewController {
         }
         
     }
-    func checkIsFavourite()
+    func checkIsFavourite() -> [FavouriteMovies]
     {
-        if CoreDataHandler.checkforSpecificItemFromCoreData(movieID: selectedMovie.id)
+        let arr = CoreDataHandler.checkforSpecificItemFromCoreData(movieID: Int64(selectedMovie.id))
+        if arr.isEmpty
         {
-            favouriteBtn.setTitle("x Remove from favourites", for: .normal)
+            favouriteBtn.setTitle("+  Add to favourites", for: .normal)
+            isFavourite =  false
         }
         else
         {
-            favouriteBtn.setTitle("+  Add to favourites", for: .normal)
+            favouriteBtn.setTitle("x Remove from favourites", for: .normal)
+            isFavourite = true
+            
         }
+        return arr
     }
     
     @IBAction func addToFavBtnPressed(_ sender: UIButton)
     {
-        let favMovie = FavouriteMovies(context: CoreDataHandler.getCoreDataobject())
-        favMovie.id = Int64 (selectedMovie.id)
-        favMovie.original_title = selectedMovie.original_title
-        favMovie.overview = selectedMovie.overview
-        favMovie.release_date = selectedMovie.release_date
-        favMovie.vote_average = selectedMovie.vote_average
-        favMovie.poster_path = selectedMovie.poster_path
-        if favouriteBtn.titleLabel?.text == "+  Add to favourites" && CoreDataHandler.checkforSpecificItemFromCoreData(movieID: selectedMovie.id)
+       let coreMovie = checkIsFavourite()
+        if isFavourite
         {
-            favouriteBtn.setTitle("x Remove from favourites", for: .normal)
-           
+            let _ = CoreDataHandler.deleteObjectFromCoreData(movieItem: coreMovie[0]) ?? []
+            favouriteBtn.setTitle("+  Add to favourites", for: .normal)
+
+        }
+        else
+        {
+            let favMovie = FavouriteMovies(context: CoreDataHandler.getCoreDataobject())
+            favMovie.id = Int64(selectedMovie.id)
+            favMovie.original_title = selectedMovie.original_title
+            favMovie.overview = selectedMovie.overview
+            favMovie.release_date = selectedMovie.release_date
+            favMovie.vote_average = selectedMovie.vote_average
+            favMovie.poster_path = selectedMovie.poster_path
             CoreDataHandler.saveIntoCoreData(movieItem: favMovie)
 
-        }else if favouriteBtn.titleLabel?.text == "x Remove from favourites"
+            favouriteBtn.setTitle("x Remove from favourites", for: .normal)
 
-        {
-            favouriteBtn.setTitle("+  Add to favourites", for: .normal)
-            let _ = CoreDataHandler.deleteObjectFromCoreData(movieItem: favMovie)
         }
-
-
+        
+        //        if favouriteBtn.titleLabel?.text == "+  Add to favourites" && CoreDataHandler.checkforSpecificItemFromCoreData(movieID: selectedMovie.id)
+        //        {
+        //            favouriteBtn.setTitle("x Remove from favourites", for: .normal)
+        //
+        //            CoreDataHandler.saveIntoCoreData(movieItem: favMovie)
+        //
+        //        }else if favouriteBtn.titleLabel?.text == "x Remove from favourites"
+        //
+        //        {
+        //            favouriteBtn.setTitle("+  Add to favourites", for: .normal)
+        //     CoreDataHandler.deleteObjectFromCoreData(movieItem: favMovie) ?? []
+        //            print("aaaa")
+        //        }
+        //
+        
     }
     
     
