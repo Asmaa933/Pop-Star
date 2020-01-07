@@ -29,28 +29,25 @@ class MovieDetailsVC: UIViewController {
         super.viewDidLoad()
         getTrailers()
         trailersTable.tableFooterView = UIView()
-        
+
     }
     override func viewWillAppear(_ animated: Bool)
     {
-        movieTitleLabel.text = selectedMovie.original_title
-        releaseDateLabel.text = selectedMovie.release_date
-        rateLabel.text = "\(selectedMovie.vote_average) / 10"
-        overviewTxt.text = selectedMovie.overview
-        movieImg.sd_setImage(with: URL(string: "https://image.tmdb.org/t/p/w185/\(selectedMovie.poster_path)"), placeholderImage: UIImage(named: "popcorn"),completed: nil)
-        starsCosmos.settings.fillMode = .precise
-        starsCosmos.rating = selectedMovie.vote_average / 2
-        if trailersArr.isEmpty
-        {
-            trailersTable.isHidden = true
-        }else
-        {
-            trailersTable.isHidden = false
-            
-        }
-        checkIsFavourite()
-        
+        updateUI()
+        let _ = checkIsFavourite()
     }
+    
+    func updateUI()
+    {
+        movieTitleLabel.text = selectedMovie.original_title
+               releaseDateLabel.text = selectedMovie.release_date
+               rateLabel.text = "\(selectedMovie.vote_average) / 10"
+               overviewTxt.text = selectedMovie.overview
+               movieImg.sd_setImage(with: URL(string: "https://image.tmdb.org/t/p/w185/\(selectedMovie.poster_path)"), placeholderImage: UIImage(named: "popcorn"),completed: nil)
+               starsCosmos.settings.fillMode = .precise
+               starsCosmos.rating = selectedMovie.vote_average / 2
+    }
+    
     func getTrailers()
     {
         trailer.getTrailers(movieID: selectedMovie.id) { (responseModel, error) in
@@ -62,12 +59,17 @@ class MovieDetailsVC: UIViewController {
                     {
                         self.trailersArr.append(responseModel[i])
                     }
-                    
                 }
                 DispatchQueue.main.async
                     {
+                        if self.trailersArr.isEmpty
+                              {
+                                self.trailersTable.isHidden = true
+                              }else
+                              {
+                                self.trailersTable.isHidden = false
+                              }
                         self.trailersTable.reloadData()
-                        
                 }
             }
             

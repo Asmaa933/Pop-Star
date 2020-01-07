@@ -55,4 +55,5 @@ extension FavoriteVC: UITableViewDelegate,UITableViewDataSource
         }
     }
     
+    
 }

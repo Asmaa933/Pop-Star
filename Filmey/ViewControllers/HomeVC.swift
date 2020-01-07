@@ -14,28 +14,35 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
     @IBOutlet weak var changeView: UIView!
     @IBOutlet weak var collectionView: UICollectionView!
     let service = MoviesServices()
-    var nowplayingArr = [MovieModel]()
+    var nowPlayingArr = [MovieModel]()
     var topRatedArr = [MovieModel]()
     var mostPopularArr  = [MovieModel]()
     var selectMovie: MovieModel?
 
+    @IBOutlet weak var nowPlayingBtn: UIButton!
+    @IBOutlet weak var mostPopularBtn: UIButton!
+    @IBOutlet weak var topRatedBtn: UIButton!
     var arrayNum = 1
     var arr = [MovieModel]()
     override func viewDidLoad() {
+      
         super.viewDidLoad()
-        getData()
+        getNowPlaying()
 
-        }
+       }
     override func viewWillAppear(_ animated: Bool) {
+
         collectionView.reloadData()
     }
-      func getData()
+      func getNowPlaying()
       {
         service.nowPlayingData { (responseModel, error) in
             if responseModel.isEmpty == false && error == nil{
                 self.arrayNum = 1
-                self.nowplayingArr = responseModel
+                self.nowPlayingArr = responseModel
+                
                 DispatchQueue.main.async {
+                 self.navigationController?.navigationBar.topItem?.title = "Now Playing"
                 self.collectionView.reloadData()
 
                 }
@@ -49,14 +56,27 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
         
     }
     
+    @IBAction func nowPlayingBtnTapped(_ sender: UIButton)
+    {
+        nowPlayingBtn.isHidden = true
+        topRatedBtn.isHidden = false
+        mostPopularBtn.isHidden = false
+        changeView.isHidden = true
+        getNowPlaying()
+    }
     @IBAction func topRatedBtn(_ sender: UIButton)
     {
+        nowPlayingBtn.isHidden = false
+        topRatedBtn.isHidden = true
+        mostPopularBtn.isHidden = false
         changeView.isHidden = true
         service.topRatedData { (responseModel, error) in
             if responseModel.isEmpty == false && error == nil{
                 self.arrayNum = 2
                         self.topRatedArr = responseModel
                         DispatchQueue.main.async {
+                  self.navigationController?.navigationBar.topItem?.title = "Top Rated"
+
                         self.collectionView.reloadData()
 
                         }
@@ -65,13 +85,17 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
     }
     
     @IBAction func mostPopularBtn(_ sender: UIButton) {
-        
+        nowPlayingBtn.isHidden = false
+        topRatedBtn.isHidden = false
+        mostPopularBtn.isHidden = true
         changeView.isHidden = true
         service.mostPopularData { (responseModel, error) in
             if responseModel.isEmpty == false && error == nil{
             self.arrayNum = 3
                     self.mostPopularArr = responseModel
                     DispatchQueue.main.async {
+                        self.navigationController?.navigationBar.topItem?.title = "Most Popular"
+
                     self.collectionView.reloadData()
         }
         
@@ -97,14 +121,17 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
         viewWillAppear(true)
     }
-
+  
 }
+
 extension HomeVC : UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout
 {
+ 
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch arrayNum {
         case 1:
-            arr = nowplayingArr
+            arr = nowPlayingArr
             case 2:
              arr = topRatedArr
             case 3:
@@ -129,10 +156,26 @@ extension HomeVC : UICollectionViewDelegate,UICollectionViewDataSource,UICollect
         selectMovie = arr[indexPath.row]
               performSegue(withIdentifier: "movieSegue", sender: nil)
     }
-    
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-return CGSize(width: 200, height: 200)
-        
-    }
+     //  return CGSize(width: UIScreen.main.bounds.width  / 3, height: UIScreen.main.bounds.height / 3)
 
-}
+   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+       return 5
+   }
+
+   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+       return 5
+   }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 5,left: 5,bottom: 5,right: 5)
+    }
+   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+     return CGSize(width: CGFloat((collectionView.frame.size.width / 2) - 10 ), height: (collectionView.frame.size.height / 2 ) - 50)
+   }
+
+
+
+   }
+    
+    
+
+
