@@ -9,63 +9,74 @@
 import Foundation
 import CoreData
 import UIKit
-class CoreDataHandler {
-    class func getCoreDataobject() -> NSManagedObjectContext {
+class CoreDataHandler
+{
+    class func getCoreDataobject() -> NSManagedObjectContext
+    {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         return appDelegate.persistentContainer.viewContext
     }
-    class func saveIntoCoreData(movieItem: FavouriteMovies){
-           let context = CoreDataHandler.getCoreDataobject()
-           do{
-               try context.save()
-               print("Saved")
-           } catch {
-               print("error in saving")
-           }
-        
-       }
-    class func getDataFromCoreData() -> [FavouriteMovies]? {
+    
+    class func saveIntoCoreData(movieItem: FavouriteMovies)
+    {
+        let context = CoreDataHandler.getCoreDataobject()
+        do{
+            try context.save()
+            print("Saved")
+        } catch {
+            print("error in saving")
+        }
+    }
+    class func getDataFromCoreData() -> [FavouriteMovies]?
+    {
         let context = CoreDataHandler.getCoreDataobject()
         var movies : [FavouriteMovies]?
-        do{
+        do
+        {
             movies = try context.fetch(FavouriteMovies.fetchRequest())
             print("fetched")
-
-        }catch{
-        print("error in get data")
+            
         }
-        
-        
+        catch
+        {
+            print("error in get data")
+        }
+        return movies
+    }
+    class func deleteObjectFromCoreData (movieItem: FavouriteMovies) -> [FavouriteMovies]?
+    {
+        let context = CoreDataHandler.getCoreDataobject()
+        context.delete(movieItem)
+        do
+        {
+            try context.save()
+            print("deleted")
+        }
+        catch
+        {
+            print("error in delete data")
+        }
+        return CoreDataHandler.getDataFromCoreData()
+    }
+    
+    class func checkforSpecificItemFromCoreData(movieID: Int64) -> [FavouriteMovies]
+    {
+        var movies = [FavouriteMovies]()
+        let context = CoreDataHandler.getCoreDataobject()
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: FavouriteMovies.entity().name ?? "")
+        request.predicate = NSPredicate(format: "id = \(movieID)")
+        do
+        {
+            movies =  try  context.fetch(request) as? [FavouriteMovies] ?? []
+        }catch
+        {
+            print("error in search")
+        }
         return movies
         
     }
-     class func deleteObjectFromCoreData (movieItem: FavouriteMovies) -> [FavouriteMovies]? {
-            let context = CoreDataHandler.getCoreDataobject()
-        context.delete(movieItem)
-            do {
-                try context.save()
-                print("deleted")
-            }catch{
-                print("error in delete data")
-            }
-            return CoreDataHandler.getDataFromCoreData()
-        }
-    
-    class func checkforSpecificItemFromCoreData(movieID: Int64) -> [FavouriteMovies]{
-           var movies = [FavouriteMovies]()
-           let context = CoreDataHandler.getCoreDataobject()
-        let request = NSFetchRequest<NSFetchRequestResult>(entityName: FavouriteMovies.entity().name ?? "")
-           request.predicate = NSPredicate(format: "id = \(movieID)")
-           do{
-               movies =  try  context.fetch(request) as? [FavouriteMovies] ?? []
-           }catch{
-               print("error in search")
-           }
-        return movies
-           
-       }
     
 }
 
-    
+
 

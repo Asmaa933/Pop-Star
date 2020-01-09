@@ -8,11 +8,9 @@
 
 import UIKit
 
-class favouriteCell: UITableViewCell {
-
-
+class favouriteCell: UITableViewCell
+{
     @IBOutlet weak var movieImg: UIImageView!
-    
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var releaseLabel: UILabel!
     @IBOutlet weak var rateLabel: UILabel!

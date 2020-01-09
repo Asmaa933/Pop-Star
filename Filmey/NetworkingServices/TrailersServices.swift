@@ -8,10 +8,10 @@
 
 import Foundation
 class TrailerServices
-    
 {
     var trailers = [TrailerData]()
-    func getTrailers(movieID: Int,completion: @escaping (_ jsonData: [TrailerData],_ error:Error?) -> Void) {
+    func getTrailers(movieID: Int,completion: @escaping (_ jsonData: [TrailerData],_ error:Error?) -> Void)
+    {
         let url = URL(string: "https://api.themoviedb.org/3/movie/\(movieID)/videos?api_key=\(apiKey)&language=en-US")
         let request = URLRequest(url: url!)
         let session = URLSession(configuration: URLSessionConfiguration.default)
@@ -23,11 +23,17 @@ class TrailerServices
                 for i in 0..<result.count
                 {
                     let dic = result[i]
-                    self.trailers.append(TrailerData(name: dic["name"] as? String ?? "", key: dic["key"] as? String ?? "", site: dic["site"] as? String ?? "", type: dic["type"] as? String ?? ""))
+                    let name = dic["name"] as? String ?? ""
+                    let key = dic["key"] as? String ?? ""
+                    let site = dic["site"] as? String ?? ""
+                    let type = dic["type"] as? String ?? ""
+                    if (name != "" && key != "" && site == "YouTube" && type == "Trailer" )
+                    {
+                        self.trailers.append(TrailerData(name: dic["name"] as? String ?? "", key: dic["key"] as? String ?? "", site: dic["site"] as? String ?? "", type: dic["type"] as? String ?? ""))
+
+                    }
                 }
-                
                 completion(self.trailers,nil)
-                
             }
                 
             catch
@@ -35,8 +41,6 @@ class TrailerServices
                 print("error")
             }
         }
-        
-        
         task.resume()
     }
 }

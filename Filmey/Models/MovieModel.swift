@@ -7,7 +7,8 @@
 //
 
 import Foundation
-class MovieModel{
+class MovieModel
+{
     let original_title : String
 	let poster_path : String
 	let overview : String
@@ -15,8 +16,8 @@ class MovieModel{
 	let vote_average : Double
     let id : Int
 
-
-    init(original_title : String, poster_path : String, overview : String, release_date : String, vote_average : Double, id : Int) {
+    init(original_title : String, poster_path : String, overview : String, release_date : String, vote_average : Double, id : Int)
+    {
         self.original_title = original_title
         self.poster_path = poster_path
         self.overview = overview
@@ -24,6 +25,4 @@ class MovieModel{
         self.vote_average = vote_average
         self.id = id
     }
-	
-
 }

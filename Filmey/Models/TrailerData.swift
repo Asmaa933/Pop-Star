@@ -13,11 +13,12 @@ class TrailerData
     var key : String
     var site : String
     var type : String
-    init(name : String, key : String, site : String, type : String) {
+    
+    init(name : String, key : String, site : String, type : String)
+    {
         self.name = name
          self.key = key
          self.site = site
          self.type = type
     }
-    
 }
