@@ -8,7 +8,7 @@ PODS:
 DEPENDENCIES:
   - Cosmos (~> 20.0)
   - RevealingSplashView
-  - SDWebImage (~> 5.0)
+  - SDWebImage
 
 SPEC REPOS:
   trunk:
@@ -21,6 +21,6 @@ SPEC CHECKSUMS:
   RevealingSplashView: 40c5a770894459736acdc95655eeba0dd30ce91c
   SDWebImage: 5bf6aec6481ae2a062bdc59f9d6c1d1e552090e0
 
-PODFILE CHECKSUM: d4342e3db1a7568d337a715701846b4e7766f169
+PODFILE CHECKSUM: 30d450e8f67e5c1c8ca8bdfb77146927b4eb1a6a
 
 COCOAPODS: 1.8.4
