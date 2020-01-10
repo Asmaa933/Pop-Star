@@ -8,6 +8,9 @@
 
 import Foundation
 let apiKey = "b535bde97adc103bbe8e5dd0aeacbe9f"
+let nowPlayingURL = "https://api.themoviedb.org/3/movie/now_playing"
+let topRatedURL = "https://api.themoviedb.org/3/movie/top_rated"
+let mostPopularURL = "https://api.themoviedb.org/3/movie/popular"
 let minPage = 1
 let nowPlayingMaxPage = 60
 let topRatedMaxPage = 339

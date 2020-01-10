@@ -22,25 +22,34 @@ class MovieDetailsVC: UIViewController {
     @IBOutlet weak var starsCosmos: CosmosView!
     
     var isFavourite = false
-    var selectedMovie: MovieModel!
-    var trailer = TrailerServices()
+    var selectedMovieID = 0
     var trailersArr = [TrailerData]()
-    
+    var selectedMovie: MovieModel!
+    var coreMovie = [FavoriteMovies]()
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        self.trailersTable.isHidden = true
         getTrailers()
         trailersTable.tableFooterView = UIView()
     }
     
     override func viewWillAppear(_ animated: Bool)
     {
-        updateUI()
+        GetMovieDetails.getMovieById(movieID: selectedMovieID) { (responseModel, error) in
+            if responseModel != nil && error == nil
+            {
+                self.selectedMovie = responseModel
+                self.updateUI()
+            }
+        }
         let _ = checkIsFavourite()
     }
     
     func updateUI()
     {
+        
+        
         movieTitleLabel.text = selectedMovie.original_title
         releaseDateLabel.text = selectedMovie.release_date
         rateLabel.text = "\(selectedMovie.vote_average) / 10"
@@ -52,14 +61,14 @@ class MovieDetailsVC: UIViewController {
     
     func getTrailers()
     {
-        trailer.getTrailers(movieID: selectedMovie.id) { (responseModel, error) in
-            if responseModel.isEmpty == false && error == nil
+        TrailerServices.getTrailers(movieID: selectedMovieID) { (responseModel, error) in
+            if responseModel != nil && error == nil
             {
-                for i in 0..<responseModel.count
+                for i in 0..<responseModel!.count
                 {
-                    if responseModel[i].site == "YouTube" && responseModel[i].type == "Trailer"
+                    if responseModel![i].site == "YouTube" && responseModel![i].type == "Trailer"
                     {
-                        self.trailersArr.append(responseModel[i])
+                        self.trailersArr.append(responseModel![i])
                     }
                 }
                 DispatchQueue.main.async
@@ -78,9 +87,9 @@ class MovieDetailsVC: UIViewController {
         }
     }
     
-    func checkIsFavourite() -> [FavouriteMovies]
+    func checkIsFavourite() -> [FavoriteMovies]
     {
-        let arr = CoreDataHandler.checkforSpecificItemFromCoreData(movieID: Int64(selectedMovie.id))
+        let arr = CoreDataHandler.checkforSpecificItemFromCoreData(movieID: Int64(selectedMovieID))
         if arr.isEmpty
         {
             favouriteBtn.setTitle("+  Add to favourites", for: .normal)
@@ -97,16 +106,15 @@ class MovieDetailsVC: UIViewController {
     
     @IBAction func addToFavBtnPressed(_ sender: UIButton)
     {
-        let coreMovie = checkIsFavourite()
+         coreMovie = checkIsFavourite()
         if isFavourite
         {
-            let _ = CoreDataHandler.deleteObjectFromCoreData(movieItem: coreMovie[0]) ?? []
-            favouriteBtn.setTitle("+  Add to favourites", for: .normal)
+            showAlertView(message: "Are you sure want to delete movie from favourites")
             
         }
         else
         {
-            let favMovie = FavouriteMovies(context: CoreDataHandler.getCoreDataobject())
+            let favMovie = FavoriteMovies(context: CoreDataHandler.getCoreDataobject())
             favMovie.id = Int64(selectedMovie.id)
             favMovie.original_title = selectedMovie.original_title
             favMovie.overview = selectedMovie.overview
@@ -117,7 +125,22 @@ class MovieDetailsVC: UIViewController {
             favouriteBtn.setTitle("x Remove from favourites", for: .normal)
         }
     }
+    func showAlertView(message: String)
+    {
+        let alert = UIAlertController(title: "Alert", message: message, preferredStyle: .alert)
+        let action1 = UIAlertAction(title: "Delete", style: .destructive) { (action) in
+            let _ = CoreDataHandler.deleteObjectFromCoreData(movieItem: self.coreMovie[0]) ?? []
+            self.favouriteBtn.setTitle("+  Add to favourites", for: .normal)
 
+        }
+        let action2 = UIAlertAction(title: "Cancel", style: .default) { (action) in
+            self.dismiss(animated: true, completion: nil)
+        }
+       alert.addAction(action1)
+        alert.addAction(action2)
+
+       self.present(alert, animated: true, completion: nil)
+    }
 }
 
 extension MovieDetailsVC : UITableViewDelegate,UITableViewDataSource

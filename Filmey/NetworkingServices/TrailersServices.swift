@@ -7,40 +7,47 @@
 //
 
 import Foundation
+import Alamofire
+import SwiftyJSON
 class TrailerServices
 {
-    var trailers = [TrailerData]()
-    func getTrailers(movieID: Int,completion: @escaping (_ jsonData: [TrailerData],_ error:Error?) -> Void)
+    class func getTrailers(movieID: Int,completion: @escaping (_ jsonData: [TrailerData]?,_ error:Error?) -> Void)
     {
-        let url = URL(string: "https://api.themoviedb.org/3/movie/\(movieID)/videos?api_key=\(apiKey)&language=en-US")
-        let request = URLRequest(url: url!)
-        let session = URLSession(configuration: URLSessionConfiguration.default)
-        let task = session.dataTask(with: request) { (data, respose, error) in
-            do
-            {
-                guard let json  = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as? [String:Any] else {return}
-                guard let result = json["results"] as? [[String:Any]] else {return}
-                for i in 0..<result.count
-                {
-                    let dic = result[i]
-                    let name = dic["name"] as? String ?? ""
-                    let key = dic["key"] as? String ?? ""
-                    let site = dic["site"] as? String ?? ""
-                    let type = dic["type"] as? String ?? ""
-                    if (name != "" && key != "" && site == "YouTube" && type == "Trailer" )
-                    {
-                        self.trailers.append(TrailerData(name: dic["name"] as? String ?? "", key: dic["key"] as? String ?? "", site: dic["site"] as? String ?? "", type: dic["type"] as? String ?? ""))
-
+        var trailers = [TrailerData]()
+        let url = "https://api.themoviedb.org/3/movie/\(movieID)/videos"
+        let parameters = ["api_key": apiKey , "language" : "en-US"]
+        Alamofire.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default, headers: nil).validate().responseJSON{(response) in
+            switch response.result{
+            case .success:
+                guard let data = response.data else {return}
+                do{                    
+                     let json = try JSON(data: data)
+                     let result = json["results"]
+                            for item in 0..<result.count
+                            {
+                            let dic = result[item]
+                            let name = dic["name"].stringValue
+                            let key = dic["key"].stringValue
+                            let site = dic["site"].stringValue
+                            let type = dic["type"].stringValue
+                            
+                            trailers.append(TrailerData(name: name, key: key, site: site, type: type))
+                        }
+                        
+                    
+                        
+                        completion(trailers,nil)
+                    
+            } catch(let error){
+                        print(error.localizedDescription)
                     }
+                    
+                    case .failure(let error):
+                    completion(nil,error)
+                    print(error.localizedDescription)
+                    
                 }
-                completion(self.trailers,nil)
-            }
-                
-            catch
-            {
-                print("error")
             }
         }
-        task.resume()
-    }
+        
 }

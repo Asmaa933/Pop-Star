@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import Alamofire
+import SwiftyJSON
 class MoviesServices
 {
     static private(set) var nowPlayingArr = [MovieModel]()
@@ -26,118 +28,65 @@ class MoviesServices
             MoviesServices.nowPlayingArr.removeAll()
         }
     }
-    func nowPlayingData(pageNum: Int, completion: @escaping (_ jsonData: [MovieModel],_ error:Error?) -> Void)
+    class  func getMovies(pageNum: Int, array: arrays,completion: @escaping (_ jsonData: [MovieModel]?,_ error:Error?) -> Void)
     {
-        let url = URL(string: "https://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)&language=en-US&page=\(pageNum)"
-        )
-        let request = URLRequest(url: url!)
-        let session = URLSession(configuration: URLSessionConfiguration.default)
-        let task = session.dataTask(with: request) { (data, respose, error) in
-            do
-            {
-                let json  = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! [String:Any]
-                guard let result = json["results"] as? [[String:Any]] else {return}
-                for i in 0..<result.count
+        var url = ""
+        switch array
+        {
+        case .now:
+            url = nowPlayingURL
+        case .top:
+            url = topRatedURL
+        case .most:
+            url = mostPopularURL
+        }
+        let parameters : [String:Any] = ["api_key": apiKey , "language" : "en-US","page" : pageNum]
+        Alamofire.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default, headers: nil).validate().responseJSON{(response) in
+            switch response.result{
+            case .success:
+                guard let data = response.data else {return}
+                do
                 {
-                    let dic = result[i]
-                    let original_title = dic["original_title"] as? String ?? ""
-                    let poster_path = dic["poster_path"] as? String ?? ""
-                    let overview = dic["overview"] as? String ?? ""
-                    let release_date = dic["release_date"] as? String ?? ""
-                    let vote_average = dic["vote_average"] as? Double ?? 0
-                    let id = dic["id"] as? Int ?? 0
-                    if (original_title != "" && poster_path != "" && overview != "" && release_date != "" && vote_average != 0 && id != 0)
+                    let json = try JSON(data: data)
+                    let result = json["results"]
+                    for item in 0..<result.count
                     {
-                        self.serialQueue.sync {
-                            MoviesServices.nowPlayingArr.append(MovieModel(original_title:original_title , poster_path: poster_path, overview: overview, release_date: release_date, vote_average: vote_average, id: id))
+                        let dic = result[item]
+                        let original_title = dic["original_title"].stringValue
+                        let poster_path = dic["poster_path"].stringValue
+                        let overview = dic["overview"].stringValue
+                        let release_date = dic["release_date"].stringValue
+                        let vote_average = dic["vote_average"].doubleValue
+                        let id = dic["id"].intValue
+                        switch array
+                        {
+                        case .now:
+                            MoviesServices.nowPlayingArr.append(MovieModel(original_title: original_title, poster_path: poster_path, overview: overview, release_date: release_date, vote_average: vote_average, id: id))
+                            completion(MoviesServices.nowPlayingArr,nil)
+                            
+                        case .top:
+                            MoviesServices.topRatedArr.append(MovieModel(original_title: original_title, poster_path: poster_path, overview: overview, release_date: release_date, vote_average: vote_average, id: id))
+                            completion(MoviesServices.topRatedArr,nil)
+                            
+                            
+                        case .most:
+                            MoviesServices.mostPopularArr.append(MovieModel(original_title: original_title, poster_path: poster_path, overview: overview, release_date: release_date, vote_average: vote_average, id: id))
+                            completion(MoviesServices.mostPopularArr,nil)
+                            
                         }
                     }
+                    
                 }
-                completion(MoviesServices.nowPlayingArr,nil)
-            }
+                catch(let error){
+                    print(error.localizedDescription)
+                }
                 
-            catch
-            {
-                print("error")
-            }
-        }
-        task.resume()
-    }
-    
-    func topRatedData(pageNum: Int,completion: @escaping (_ jsonData: [MovieModel],_ error:Error?) -> Void)
-    {
-        let url = URL(string: "https://api.themoviedb.org/3/movie/top_rated?api_key=\(apiKey)&language=en-US&page=\(pageNum)")
-        let request = URLRequest(url: url!)
-        let session = URLSession(configuration: URLSessionConfiguration.default)
-        let task = session.dataTask(with: request) { (data, respose, error) in
-            do
-            {
-                let json  = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! [String:Any]
-                guard let result = json["results"] as? [[String:Any]] else {return}
-                for i in 0..<result.count
-                {
-                    let dic = result[i]
-                    let original_title = dic["original_title"] as? String ?? ""
-                    let poster_path = dic["poster_path"] as? String ?? ""
-                    let overview = dic["overview"] as? String ?? ""
-                    let release_date = dic["release_date"] as? String ?? ""
-                    let vote_average = dic["vote_average"] as? Double ?? 0
-                    let id = dic["id"] as? Int ?? 0
-                    if (original_title != "" && poster_path != "" && overview != "" && release_date != "" && vote_average != 0 && id != 0)
-                    {
-                        self.serialQueue.sync
-                            {
-                                MoviesServices.topRatedArr.append(MovieModel(original_title:original_title , poster_path: poster_path, overview: overview, release_date: release_date, vote_average: vote_average, id: id))
-                        }
-                    }
-                }
-                completion(MoviesServices.topRatedArr,nil)
-            }
+            case .failure(let error):
+                completion(nil,error)
+                print(error.localizedDescription)
                 
-            catch
-            {
-                print("error")
             }
         }
-        
-        task.resume()
-    }
-    
-    func mostPopularData(pageNum: Int,completion: @escaping (_ jsonData: [MovieModel],_ error:Error?) -> Void)
-    {
-        let url = URL(string: "https://api.themoviedb.org/3/movie/popular?api_key=\(apiKey)&language=en-US&page=\(pageNum)")
-        let request = URLRequest(url: url!)
-        let session = URLSession(configuration: URLSessionConfiguration.default)
-        let task = session.dataTask(with: request){ (data, respose, error) in
-            do
-            {
-                let json  = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! [String:Any]
-                guard let result = json["results"] as? [[String:Any]] else {return}
-                for i in 0..<result.count
-                {
-                    let dic = result[i]
-                    let original_title = dic["original_title"] as? String ?? ""
-                    let poster_path = dic["poster_path"] as? String ?? ""
-                    let overview = dic["overview"] as? String ?? ""
-                    let release_date = dic["release_date"] as? String ?? ""
-                    let vote_average = dic["vote_average"] as? Double ?? 0
-                    let id = dic["id"] as? Int ?? 0
-                    if (original_title != "" && poster_path != "" && overview != "" && release_date != "" && vote_average != 0 && id != 0)
-                    {
-                        self.serialQueue.sync
-                            {
-                                MoviesServices.mostPopularArr.append(MovieModel(original_title:original_title , poster_path: poster_path, overview: overview, release_date: release_date, vote_average: vote_average, id: id))
-                        }
-                    }
-                }
-                completion(MoviesServices.mostPopularArr,nil)
-            }
-            catch
-            {
-                print("error")
-            }
-        }
-        task.resume()
     }
 }
 

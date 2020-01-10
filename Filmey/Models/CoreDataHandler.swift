@@ -17,7 +17,7 @@ class CoreDataHandler
         return appDelegate.persistentContainer.viewContext
     }
     
-    class func saveIntoCoreData(movieItem: FavouriteMovies)
+    class func saveIntoCoreData(movieItem: FavoriteMovies)
     {
         let context = CoreDataHandler.getCoreDataobject()
         do{
@@ -27,13 +27,13 @@ class CoreDataHandler
             print("error in saving")
         }
     }
-    class func getDataFromCoreData() -> [FavouriteMovies]?
+    class func getDataFromCoreData() -> [FavoriteMovies]?
     {
         let context = CoreDataHandler.getCoreDataobject()
-        var movies : [FavouriteMovies]?
+        var movies : [FavoriteMovies]?
         do
         {
-            movies = try context.fetch(FavouriteMovies.fetchRequest())
+            movies = try context.fetch(FavoriteMovies.fetchRequest())
             print("fetched")
             
         }
@@ -43,7 +43,7 @@ class CoreDataHandler
         }
         return movies
     }
-    class func deleteObjectFromCoreData (movieItem: FavouriteMovies) -> [FavouriteMovies]?
+    class func deleteObjectFromCoreData (movieItem: FavoriteMovies) -> [FavoriteMovies]?
     {
         let context = CoreDataHandler.getCoreDataobject()
         context.delete(movieItem)
@@ -59,15 +59,15 @@ class CoreDataHandler
         return CoreDataHandler.getDataFromCoreData()
     }
     
-    class func checkforSpecificItemFromCoreData(movieID: Int64) -> [FavouriteMovies]
+    class func checkforSpecificItemFromCoreData(movieID: Int64) -> [FavoriteMovies]
     {
-        var movies = [FavouriteMovies]()
+        var movies = [FavoriteMovies]()
         let context = CoreDataHandler.getCoreDataobject()
-        let request = NSFetchRequest<NSFetchRequestResult>(entityName: FavouriteMovies.entity().name ?? "")
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: FavoriteMovies.entity().name ?? "")
         request.predicate = NSPredicate(format: "id = \(movieID)")
         do
         {
-            movies =  try  context.fetch(request) as? [FavouriteMovies] ?? []
+            movies =  try  context.fetch(request) as? [FavoriteMovies] ?? []
         }catch
         {
             print("error in search")

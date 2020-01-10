@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SDWebImage
+import RevealingSplashView
 
 class HomeVC: UIViewController,UITabBarControllerDelegate{
     @IBOutlet weak var changeView: UIView!
@@ -16,34 +16,78 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
     @IBOutlet weak var mostPopularBtn: UIButton!
     @IBOutlet weak var topRatedBtn: UIButton!
    
-    let service = MoviesServices()
     var nowPlayingArr = [MovieModel]()
     var topRatedArr = [MovieModel]()
     var mostPopularArr  = [MovieModel]()
-    var selectMovie: MovieModel?
+    var movieID = 0
     var renderedArr: arrays = .now
     var arr = [MovieModel]()
-   
+    var imageView = UIImageView()
     override func viewDidLoad()
     {
+        
         super.viewDidLoad()
-        getNowPlaying()
+        self.tabBarController?.tabBar.isHidden = true
+        self.navigationController?.navigationBar.isHidden = true
+
+    splashScreenShower()
+
+
     }
-    
+   
+    func checkReachability()
+    {
+        if Reachability.isConnectedToNetwork()
+               {
+                imageView.removeFromSuperview()
+                getNowPlaying()
+                self.navigationController?.navigationBar.isHidden = false
+                self.tabBarController?.tabBar.isHidden = false
+               }
+               else
+               {
+                
+                   showAlertView(message: "Check internet connection")
+               }
+    }
+    func handleNoInternet()
+    {
+        imageView = UIImageView(frame: CGRect(x: 50, y: 100, width: 300, height: 300))
+        imageView.center = view.center
+        imageView.layer.cornerRadius = 10
+        imageView.clipsToBounds = true
+        imageView.image = UIImage(named: "internet", in: Bundle(for: type(of: self)), compatibleWith: nil)
+        view.addSubview(imageView)
+        checkReachability()
+    }
+    func splashScreenShower()
+    {
+        MoviesServices.resetArray(arr: .now)
+               let revealingSplashView = RevealingSplashView(iconImage: UIImage(named: "1")!,iconInitialSize: CGSize(width: 70, height: 70), backgroundColor: UIColor(red:0.11, green:0.56, blue:0.95, alpha:1.0))
+               revealingSplashView.animationType = SplashAnimationType.swingAndZoomOut
+               self.view.addSubview(revealingSplashView)
+               revealingSplashView.startAnimation()
+                {
+               
+                    self.checkReachability()
+
+                }
+    }
     override func viewWillAppear(_ animated: Bool)
     {
+
         collectionView.reloadData()
     }
     
     func getNowPlaying()
     {
-        for pageNum in minPage...nowPlayingMaxPage / 2
+        for pageNum in minPage...nowPlayingMaxPage / 10
         {
-            service.nowPlayingData(pageNum: pageNum) { (responseModel, error) in
-                if responseModel.isEmpty == false && error == nil
+            MoviesServices.getMovies(pageNum: pageNum, array: .now) { (responseModel, error) in
+                if responseModel != nil && error == nil
                 {
                     self.renderedArr = .now
-                    self.nowPlayingArr = responseModel
+                    self.nowPlayingArr = responseModel!
                 }
                 DispatchQueue.main.async
                 {
@@ -81,13 +125,13 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
         topRatedBtn.isHidden = true
         mostPopularBtn.isHidden = false
         changeView.isHidden = true
-        for pageNum in minPage...topRatedMaxPage / 2
+        for pageNum in minPage...topRatedMaxPage / 10
         {
-            service.topRatedData(pageNum: pageNum) { (responseModel, error) in
-                if responseModel.isEmpty == false && error == nil
+            MoviesServices.getMovies(pageNum: pageNum, array: .top) { (responseModel, error) in
+                if responseModel != nil && error == nil
                 {
                     self.renderedArr = .top
-                    self.topRatedArr = responseModel
+                    self.topRatedArr = responseModel!
                     DispatchQueue.main.async {
                         
                         MoviesServices.resetArray(arr: .now)
@@ -110,13 +154,13 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
         topRatedBtn.isHidden = false
         mostPopularBtn.isHidden = true
         changeView.isHidden = true
-        for pageNum in minPage...mostPopularMaxPage / 2
+        for pageNum in minPage...mostPopularMaxPage / 10
         {
-            service.mostPopularData(pageNum: pageNum) { (responseModel, error) in
-                if responseModel.isEmpty == false && error == nil
+            MoviesServices.getMovies(pageNum: pageNum, array: .most) { (responseModel, error) in
+                if responseModel != nil && error == nil
                 {
                     self.renderedArr = .most
-                    self.mostPopularArr = responseModel
+                    self.mostPopularArr = responseModel!
                     DispatchQueue.main.async
                     {
                         MoviesServices.resetArray(arr: .now)
@@ -146,7 +190,7 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
         {
             if let detail = segue.destination as? MovieDetailsVC
             {
-                detail.selectedMovie = selectMovie
+                detail.selectedMovieID = movieID
             }
         }
     }
@@ -154,6 +198,22 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController)
     {
         viewWillAppear(true)
+    }
+    func showAlertView(message: String)
+    {
+        let alert = UIAlertController(title: "Alert", message: message, preferredStyle: .alert)
+        let action1 = UIAlertAction(title: "ok", style: .default) { (action) in
+            self.dismiss(animated: true, completion: nil)
+            self.handleNoInternet()
+
+        }
+        let action2 = UIAlertAction(title: "Try again ", style: .default) { (action) in
+            self.checkReachability()
+        }
+       alert.addAction(action1)
+        alert.addAction(action2)
+
+       self.present(alert, animated: true, completion: nil)
     }
 }
 
@@ -180,14 +240,15 @@ extension HomeVC : UICollectionViewDelegate,UICollectionViewDataSource,UICollect
             print("can't get")
             return UICollectionViewCell()
         }
-        cell.movieImg?.sd_setImage(with: URL(string: "https://image.tmdb.org/t/p/w185/\(arr[indexPath.row].poster_path)"), placeholderImage: UIImage(named: "popcorn"),completed: nil)
+        cell.configureCell(poster_path: arr[indexPath.row].poster_path)
+         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
-        selectMovie = arr[indexPath.row]
-        performSegue(withIdentifier: "movieSegue", sender: nil)
+        movieID = arr[indexPath.row].id
+    performSegue(withIdentifier: "movieSegue", sender: nil)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
