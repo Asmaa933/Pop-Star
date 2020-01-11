@@ -46,8 +46,8 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
         {
             
                 imageView.removeFromSuperview()
-                getNowPlaying()
-                self.navigationController?.navigationBar.isHidden = false
+              getNowPlaying()
+            self.navigationController?.navigationBar.isHidden = false
                 self.tabBarController?.tabBar.isHidden = false
                 alertCounter = 0
                }
@@ -60,8 +60,6 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
                 }
 
                }
-   
-
     }
     func handleNoInternet()
     {
@@ -102,9 +100,7 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
     
     func getNowPlaying()
     {
-        for pageNum in minPage...nowPlayingMaxPage / 10
-        {
-            MoviesServices.getMovies(pageNum: pageNum, array: .now) { (responseModel, error) in
+            MoviesServices.getMovies(pageNum: nowCounter, array: .now) { (responseModel, error) in
                 if responseModel != nil && error == nil
                 {
                     self.renderedArr = .now
@@ -121,7 +117,6 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
                 }
             }
         }
-    }
     
     @IBAction func barBtnPressed(_ sender: UIBarButtonItem)
     {
@@ -141,14 +136,13 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
     
     @IBAction func topRatedBtnPressed()
     {
+
         self.collectionView?.scrollToItem(at: IndexPath(row: 0, section: 0),at: .top,animated: true)
         nowPlayingBtn.isHidden = false
         topRatedBtn.isHidden = true
         mostPopularBtn.isHidden = false
         changeView.isHidden = true
-        for pageNum in minPage...topRatedMaxPage / 10
-        {
-            MoviesServices.getMovies(pageNum: pageNum, array: .top) { (responseModel, error) in
+            MoviesServices.getMovies(pageNum: topCounter, array: .top) { (responseModel, error) in
                 if responseModel != nil && error == nil
                 {
                     self.renderedArr = .top
@@ -164,7 +158,6 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
                         
                         self.collectionView.reloadData()
                         
-                    }
                 }
             }
         }
@@ -175,9 +168,8 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
         topRatedBtn.isHidden = false
         mostPopularBtn.isHidden = true
         changeView.isHidden = true
-        for pageNum in minPage...mostPopularMaxPage / 10
-        {
-            MoviesServices.getMovies(pageNum: pageNum, array: .most) { (responseModel, error) in
+
+            MoviesServices.getMovies(pageNum: mostCounter, array: .most) { (responseModel, error) in
                 if responseModel != nil && error == nil
                 {
                     self.renderedArr = .most
@@ -192,7 +184,6 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
                         self.navigationController?.navigationBar.topItem?.title = "Most Popular"
                         
                         self.collectionView.reloadData()
-                    }
                     
                 }
             }
@@ -277,7 +268,28 @@ extension HomeVC : UICollectionViewDelegate,UICollectionViewDataSource,UICollect
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if indexPath.row == arr.count - 1
         {
-                
+            switch renderedArr {
+                   case .now:
+                    if nowCounter <= nowPlayingMaxPage
+                    {
+                        self.nowCounter += 1;
+                        getNowPlaying()
+
+                    }
+            case .top:
+                if topCounter <= topRatedMaxPage
+                {
+                    topCounter += 1;
+                    topRatedBtnPressed()
+
+                }
+                   case .most:
+                    if mostCounter <= mostPopularMaxPage
+                    {
+                        mostCounter += 1 ;
+                        mostPopularBtnPressed()
+                    }
+            }
         }
     }
     
@@ -285,18 +297,7 @@ extension HomeVC : UICollectionViewDelegate,UICollectionViewDataSource,UICollect
     {
         return CGSize(width: CGFloat((collectionView.frame.size.width / 2) - 10 ), height: (collectionView.frame.size.height / 2 ) - 50)
     }
-    
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat
-    {
-        return 5
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat
-    {
-        return 5
-    }
-    
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets
     {
         return UIEdgeInsets(top: 5,left: 5,bottom: 5,right: 5)

@@ -38,6 +38,8 @@ class MoviesServices
         case .most:
             url = mostPopularURL
         }
+        if Reachability.isConnectedToNetwork()
+        {
         let parameters : [String:Any] = ["api_key": apiKey , "language" : "en-US","page" : pageNum]
         Alamofire.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default, headers: nil).validate().responseJSON{(response) in
             switch response.result{
@@ -89,8 +91,12 @@ class MoviesServices
             }
         }
     }
+        else
+        {
+            print("hhh")
+        }
     
 }
 
-
+}
 

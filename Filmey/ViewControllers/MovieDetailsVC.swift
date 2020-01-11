@@ -59,8 +59,6 @@ class MovieDetailsVC: UIViewController {
                 self.reviewCollectionView.reloadData()
             }
         }
-        
-
         let _ = checkIsFavourite()
     }
     
@@ -89,18 +87,7 @@ class MovieDetailsVC: UIViewController {
                         self.trailersArr.append(responseModel![i])
                     }
                 }
-                DispatchQueue.main.async
-                {
-                    if self.trailersArr.isEmpty
-                 {
-                   self.trailersTable.isHidden = true
-                 }
-                 else
-                 {
-                   self.trailersTable.isHidden = false
-                  }
-                  self.trailersTable.reloadData()
-                }
+              
             }
         }
     }
@@ -161,7 +148,7 @@ class MovieDetailsVC: UIViewController {
     }
 }
 
-extension MovieDetailsVC : UITableViewDelegate,UITableViewDataSource,UICollectionViewDelegate,UICollectionViewDataSource
+extension MovieDetailsVC : UITableViewDelegate,UITableViewDataSource
 {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
@@ -191,8 +178,10 @@ extension MovieDetailsVC : UITableViewDelegate,UITableViewDataSource,UICollectio
         let safariVC = SFSafariViewController(url: url)
         present(safariVC, animated: true)
     }
+}
     
-
+    extension MovieDetailsVC : UICollectionViewDelegate,UICollectionViewDataSource
+    {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return reviewArr.count
     }
@@ -215,5 +204,6 @@ extension MovieDetailsVC : UITableViewDelegate,UITableViewDataSource,UICollectio
     {
         return CGSize(width: 374, height: 130)
     }
-}
 
+
+}
