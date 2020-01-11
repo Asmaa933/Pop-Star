@@ -10,6 +10,8 @@ import UIKit
 import RevealingSplashView
 
 class HomeVC: UIViewController,UITabBarControllerDelegate{
+
+    
     @IBOutlet weak var changeView: UIView!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var nowPlayingBtn: UIButton!
@@ -21,34 +23,45 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
     var mostPopularArr  = [MovieModel]()
     var movieID = 0
     var renderedArr: arrays = .now
+    var nowCounter = 1
+    var topCounter = 1
+    var mostCounter = 1
     var arr = [MovieModel]()
+    var alertCounter = 0
     var imageView = UIImageView()
     override func viewDidLoad()
     {
-        
         super.viewDidLoad()
         self.tabBarController?.tabBar.isHidden = true
-        self.navigationController?.navigationBar.isHidden = true
-
+               self.navigationController?.navigationBar.isHidden = true
     splashScreenShower()
 
 
     }
-   
+  
     func checkReachability()
     {
+
         if Reachability.isConnectedToNetwork()
-               {
+        {
+            
                 imageView.removeFromSuperview()
                 getNowPlaying()
                 self.navigationController?.navigationBar.isHidden = false
                 self.tabBarController?.tabBar.isHidden = false
+                alertCounter = 0
                }
                else
                {
-                
-                   showAlertView(message: "Check internet connection")
+                if alertCounter == 0
+                {
+                    showAlertView(message: "Check internet connection")
+
+                }
+
                }
+   
+
     }
     func handleNoInternet()
     {
@@ -58,8 +71,16 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
         imageView.clipsToBounds = true
         imageView.image = UIImage(named: "internet", in: Bundle(for: type(of: self)), compatibleWith: nil)
         view.addSubview(imageView)
+        let downSwipe = UISwipeGestureRecognizer(target: self, action: #selector(HomeVC.gestureRecognizer))
+        downSwipe.direction = UISwipeGestureRecognizer.Direction.down
+        self.view.addGestureRecognizer(downSwipe)
         checkReachability()
     }
+    @objc func gestureRecognizer()
+    {
+        checkReachability()
+    }
+   
     func splashScreenShower()
     {
         MoviesServices.resetArray(arr: .now)
@@ -201,6 +222,7 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
     }
     func showAlertView(message: String)
     {
+        alertCounter += 1;
         let alert = UIAlertController(title: "Alert", message: message, preferredStyle: .alert)
         let action1 = UIAlertAction(title: "ok", style: .default) { (action) in
             self.dismiss(animated: true, completion: nil)
@@ -221,6 +243,7 @@ extension HomeVC : UICollectionViewDelegate,UICollectionViewDataSource,UICollect
 {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
+        
         switch renderedArr {
         case .now:
             arr = nowPlayingArr
@@ -230,6 +253,7 @@ extension HomeVC : UICollectionViewDelegate,UICollectionViewDataSource,UICollect
             arr = mostPopularArr
             
         }
+        
         return arr.count
         
     }
@@ -249,6 +273,12 @@ extension HomeVC : UICollectionViewDelegate,UICollectionViewDataSource,UICollect
     {
         movieID = arr[indexPath.row].id
     performSegue(withIdentifier: "movieSegue", sender: nil)
+    }
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if indexPath.row == arr.count - 1
+        {
+                
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize

@@ -20,29 +20,47 @@ class MovieDetailsVC: UIViewController {
     @IBOutlet weak var trailersTable: UITableView!
     @IBOutlet weak var rateLabel: UILabel!
     @IBOutlet weak var starsCosmos: CosmosView!
+    @IBOutlet weak var reviewCollectionView: UICollectionView!
     
     var isFavourite = false
     var selectedMovieID = 0
     var trailersArr = [TrailerData]()
     var selectedMovie: MovieModel!
     var coreMovie = [FavoriteMovies]()
+    var reviewArr = [ReviewModel]()
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        self.reviewCollectionView.isPagingEnabled = true;
         self.trailersTable.isHidden = true
         getTrailers()
         trailersTable.tableFooterView = UIView()
+      let nib = UINib(nibName: "ReviewCell", bundle: nil)
+        reviewCollectionView.register(nib, forCellWithReuseIdentifier: "reviewCell")
     }
-    
+
+
     override func viewWillAppear(_ animated: Bool)
     {
         GetMovieDetails.getMovieById(movieID: selectedMovieID) { (responseModel, error) in
-            if responseModel != nil && error == nil
-            {
-                self.selectedMovie = responseModel
-                self.updateUI()
+             if responseModel != nil && error == nil
+                       {
+                        self.selectedMovie = responseModel
+                                       self.updateUI()
             }
         }
+        ReviewServices.getReviewById(movieID: selectedMovieID, pageNum: 1) { (responseModel, error) in
+                         if responseModel != nil && error == nil
+                         {
+                        
+                            self.reviewArr = responseModel!
+            }
+            DispatchQueue.main.async {
+                self.reviewCollectionView.reloadData()
+            }
+        }
+        
+
         let _ = checkIsFavourite()
     }
     
@@ -143,7 +161,7 @@ class MovieDetailsVC: UIViewController {
     }
 }
 
-extension MovieDetailsVC : UITableViewDelegate,UITableViewDataSource
+extension MovieDetailsVC : UITableViewDelegate,UITableViewDataSource,UICollectionViewDelegate,UICollectionViewDataSource
 {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
@@ -174,5 +192,28 @@ extension MovieDetailsVC : UITableViewDelegate,UITableViewDataSource
         present(safariVC, animated: true)
     }
     
+
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return reviewArr.count
+    }
     
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "reviewCell", for: indexPath) as? ReviewCell else
+               {
+                   print("can't get")
+                   return UICollectionViewCell()
+               }
+        
+           
+               cell.autherLabel.text = self.reviewArr[indexPath.row].author
+                cell.reviewText.text =  self.reviewArr[indexPath.row].content
+                
+    
+        return cell
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
+    {
+        return CGSize(width: 374, height: 130)
+    }
 }
+

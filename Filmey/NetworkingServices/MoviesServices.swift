@@ -13,9 +13,7 @@ class MoviesServices
 {
     static private(set) var nowPlayingArr = [MovieModel]()
     static private(set) var topRatedArr = [MovieModel]()
-    static private(set) var mostPopularArr = [MovieModel]()
-    let serialQueue = DispatchQueue(label: "myqueue")
-    
+    static private(set) var mostPopularArr = [MovieModel]()    
     static func resetArray(arr: arrays)
     {
         switch arr
@@ -58,8 +56,11 @@ class MoviesServices
                         let release_date = dic["release_date"].stringValue
                         let vote_average = dic["vote_average"].doubleValue
                         let id = dic["id"].intValue
+                       if (original_title != "" && poster_path != "" && overview != "" && release_date != "" && vote_average != 0 && id != 0)
+                       {
                         switch array
                         {
+                                
                         case .now:
                             MoviesServices.nowPlayingArr.append(MovieModel(original_title: original_title, poster_path: poster_path, overview: overview, release_date: release_date, vote_average: vote_average, id: id))
                             completion(MoviesServices.nowPlayingArr,nil)
@@ -75,7 +76,7 @@ class MoviesServices
                             
                         }
                     }
-                    
+                    }
                 }
                 catch(let error){
                     print(error.localizedDescription)
@@ -88,6 +89,7 @@ class MoviesServices
             }
         }
     }
+    
 }
 
 
