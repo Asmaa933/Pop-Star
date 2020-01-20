@@ -10,14 +10,14 @@ import UIKit
 import RevealingSplashView
 
 class HomeVC: UIViewController,UITabBarControllerDelegate{
-
+    
     
     @IBOutlet weak var changeView: UIView!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var nowPlayingBtn: UIButton!
     @IBOutlet weak var mostPopularBtn: UIButton!
     @IBOutlet weak var topRatedBtn: UIButton!
-   
+    
     var nowPlayingArr = [MovieModel]()
     var topRatedArr = [MovieModel]()
     var mostPopularArr  = [MovieModel]()
@@ -33,33 +33,40 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
     {
         super.viewDidLoad()
         self.tabBarController?.tabBar.isHidden = true
-               self.navigationController?.navigationBar.isHidden = true
-    splashScreenShower()
-
-
+        self.navigationController?.navigationBar.isHidden = true
+        splashScreenShower()
+        
+        
     }
-  
+    
     func checkReachability()
     {
-
+        
         if Reachability.isConnectedToNetwork()
         {
             
-                imageView.removeFromSuperview()
-              getNowPlaying()
-            self.navigationController?.navigationBar.isHidden = false
+            imageView.removeFromSuperview()
+            switch renderedArr
+            {
+            case .now:
+                getNowPlaying()
+            case .top:
+                topRatedBtnPressed()
+            case .most:
+                mostPopularBtnPressed()
+            }
+                self.navigationController?.navigationBar.isHidden = false
                 self.tabBarController?.tabBar.isHidden = false
                 alertCounter = 0
-               }
-               else
-               {
+            
+        }else
+            {
                 if alertCounter == 0
                 {
                     showAlertView(message: "Check internet connection")
-
+                    
                 }
-
-               }
+        }
     }
     func handleNoInternet()
     {
@@ -76,47 +83,51 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
     }
     @objc func gestureRecognizer()
     {
+        alertCounter = 0
         checkReachability()
     }
-   
+    
     func splashScreenShower()
     {
         MoviesServices.resetArray(arr: .now)
-               let revealingSplashView = RevealingSplashView(iconImage: UIImage(named: "1")!,iconInitialSize: CGSize(width: 70, height: 70), backgroundColor: UIColor(red:0.11, green:0.56, blue:0.95, alpha:1.0))
-               revealingSplashView.animationType = SplashAnimationType.swingAndZoomOut
-               self.view.addSubview(revealingSplashView)
-               revealingSplashView.startAnimation()
-                {
-               
-                    self.checkReachability()
-
-                }
+        let revealingSplashView = RevealingSplashView(iconImage: UIImage(named: "1")!,iconInitialSize: CGSize(width: 70, height: 70), backgroundColor: UIColor(red:0.11, green:0.56, blue:0.95, alpha:1.0))
+        revealingSplashView.animationType = SplashAnimationType.swingAndZoomOut
+        self.view.addSubview(revealingSplashView)
+        revealingSplashView.startAnimation()
+            {
+                
+                self.checkReachability()
+                
+        }
     }
     override func viewWillAppear(_ animated: Bool)
     {
-
+        
         collectionView.reloadData()
     }
     
     func getNowPlaying()
     {
-            MoviesServices.getMovies(pageNum: nowCounter, array: .now) { (responseModel, error) in
-                if responseModel != nil && error == nil
-                {
-                    self.renderedArr = .now
-                    self.nowPlayingArr = responseModel!
-                }
-                DispatchQueue.main.async
+        topCounter = 1
+        mostCounter = 1
+        MoviesServices.getMovies(pageNum: nowCounter, array: .now) { (responseModel, error) in
+            if responseModel != nil && error == nil
+            {
+                self.renderedArr = .now
+                self.nowPlayingArr = responseModel!
+            }
+            DispatchQueue.main.async
                 {
                     MoviesServices.resetArray(arr: .top)
                     MoviesServices.resetArray(arr: .most)
+                    
                     self.mostPopularArr = []
                     self.topRatedArr = []
                     self.navigationController?.navigationBar.topItem?.title = "Now Playing"
                     self.collectionView.reloadData()
-                }
             }
         }
+    }
     
     @IBAction func barBtnPressed(_ sender: UIBarButtonItem)
     {
@@ -126,7 +137,11 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
     
     @IBAction func nowPlayingBtnTapped(_ sender: UIButton)
     {
-        self.collectionView?.scrollToItem(at: IndexPath(row: 0, section: 0),at: .top,animated: true)
+        if(nowCounter==1)
+        {
+            self.collectionView?.scrollToItem(at: IndexPath(row: 0, section: 0),at: .top,animated: true)
+
+        }
         nowPlayingBtn.isHidden = true
         topRatedBtn.isHidden = false
         mostPopularBtn.isHidden = false
@@ -136,45 +151,56 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
     
     @IBAction func topRatedBtnPressed()
     {
+        nowCounter = 1
+        mostCounter = 1
+        if(topCounter==1)
+              {
+                  self.collectionView?.scrollToItem(at: IndexPath(row: 0, section: 0),at: .top,animated: true)
 
-        self.collectionView?.scrollToItem(at: IndexPath(row: 0, section: 0),at: .top,animated: true)
+              }
         nowPlayingBtn.isHidden = false
         topRatedBtn.isHidden = true
         mostPopularBtn.isHidden = false
         changeView.isHidden = true
-            MoviesServices.getMovies(pageNum: topCounter, array: .top) { (responseModel, error) in
-                if responseModel != nil && error == nil
-                {
-                    self.renderedArr = .top
-                    self.topRatedArr = responseModel!
-                    DispatchQueue.main.async {
-                        
-                        MoviesServices.resetArray(arr: .now)
-                        MoviesServices.resetArray(arr: .most)
-                        self.nowPlayingArr = []
-                        self.mostPopularArr = []
-                        
-                        self.navigationController?.navigationBar.topItem?.title = "Top Rated"
-                        
-                        self.collectionView.reloadData()
-                        
+        MoviesServices.getMovies(pageNum: topCounter, array: .top) { (responseModel, error) in
+            if responseModel != nil && error == nil
+            {
+                self.renderedArr = .top
+                self.topRatedArr = responseModel!
+                DispatchQueue.main.async {
+                    
+                    MoviesServices.resetArray(arr: .now)
+                    MoviesServices.resetArray(arr: .most)
+                    self.nowPlayingArr = []
+                    self.mostPopularArr = []
+                    
+                    self.navigationController?.navigationBar.topItem?.title = "Top Rated"
+                    
+                    self.collectionView.reloadData()
+                    
                 }
             }
         }
     }
     @IBAction func mostPopularBtnPressed() {
-        self.collectionView?.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top,animated: true)
+        nowCounter = 1
+        topCounter = 1
+        if(mostCounter==1)
+              {
+                  self.collectionView?.scrollToItem(at: IndexPath(row: 0, section: 0),at: .top,animated: true)
+
+              }
         nowPlayingBtn.isHidden = false
         topRatedBtn.isHidden = false
         mostPopularBtn.isHidden = true
         changeView.isHidden = true
-
-            MoviesServices.getMovies(pageNum: mostCounter, array: .most) { (responseModel, error) in
-                if responseModel != nil && error == nil
-                {
-                    self.renderedArr = .most
-                    self.mostPopularArr = responseModel!
-                    DispatchQueue.main.async
+        
+        MoviesServices.getMovies(pageNum: mostCounter, array: .most) { (responseModel, error) in
+            if responseModel != nil && error == nil
+            {
+                self.renderedArr = .most
+                self.mostPopularArr = responseModel!
+                DispatchQueue.main.async
                     {
                         MoviesServices.resetArray(arr: .now)
                         MoviesServices.resetArray(arr: .top)
@@ -184,7 +210,7 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
                         self.navigationController?.navigationBar.topItem?.title = "Most Popular"
                         
                         self.collectionView.reloadData()
-                    
+                        
                 }
             }
         }
@@ -218,15 +244,18 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
         let action1 = UIAlertAction(title: "ok", style: .default) { (action) in
             self.dismiss(animated: true, completion: nil)
             self.handleNoInternet()
-
+            
         }
         let action2 = UIAlertAction(title: "Try again ", style: .default) { (action) in
-            self.checkReachability()
-        }
-       alert.addAction(action1)
-        alert.addAction(action2)
+            self.alertCounter = 0;
 
-       self.present(alert, animated: true, completion: nil)
+            self.checkReachability()
+            
+        }
+        alert.addAction(action1)
+        alert.addAction(action2)
+        
+        self.present(alert, animated: true, completion: nil)
     }
 }
 
@@ -256,53 +285,53 @@ extension HomeVC : UICollectionViewDelegate,UICollectionViewDataSource,UICollect
             return UICollectionViewCell()
         }
         cell.configureCell(poster_path: arr[indexPath.row].poster_path)
-         
+        
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
     {
         movieID = arr[indexPath.row].id
-    performSegue(withIdentifier: "movieSegue", sender: nil)
+        performSegue(withIdentifier: "movieSegue", sender: nil)
     }
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if indexPath.row == arr.count - 1
         {
             switch renderedArr {
-                   case .now:
-                    if nowCounter <= nowPlayingMaxPage
-                    {
-                        self.nowCounter += 1;
-                        getNowPlaying()
-
-                    }
+            case .now:
+                if nowCounter <= nowPlayingMaxPage
+                {
+                    self.nowCounter += 1;
+                    getNowPlaying()
+                    
+                }
             case .top:
                 if topCounter <= topRatedMaxPage
                 {
                     topCounter += 1;
                     topRatedBtnPressed()
-
+                    
                 }
-                   case .most:
-                    if mostCounter <= mostPopularMaxPage
-                    {
-                        mostCounter += 1 ;
-                        mostPopularBtnPressed()
-                    }
+            case .most:
+                if mostCounter <= mostPopularMaxPage
+                {
+                    mostCounter += 1 ;
+                    mostPopularBtnPressed()
+                }
             }
         }
     }
-    
+   
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
     {
         return CGSize(width: CGFloat((collectionView.frame.size.width / 2) - 10 ), height: (collectionView.frame.size.height / 2 ) - 50)
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets
     {
         return UIEdgeInsets(top: 5,left: 5,bottom: 5,right: 5)
     }
-   
+    
 }
 
 

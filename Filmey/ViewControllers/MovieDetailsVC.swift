@@ -32,11 +32,10 @@ class MovieDetailsVC: UIViewController {
     {
         super.viewDidLoad()
         self.reviewCollectionView.isPagingEnabled = true;
-        self.trailersTable.isHidden = true
+        trailersTable.isHidden = true
         getTrailers()
         trailersTable.tableFooterView = UIView()
-      let nib = UINib(nibName: "ReviewCell", bundle: nil)
-        reviewCollectionView.register(nib, forCellWithReuseIdentifier: "reviewCell")
+
     }
 
 
@@ -89,6 +88,8 @@ class MovieDetailsVC: UIViewController {
                 }
               
             }
+            self.trailersTable.isHidden = false
+            self.trailersTable.reloadData()
         }
     }
     
@@ -152,8 +153,16 @@ extension MovieDetailsVC : UITableViewDelegate,UITableViewDataSource
 {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        return trailersArr.count
-    }
+        if trailersArr.isEmpty{
+           tableView.setEmptyView(title: "No trailers found", message: "", messageImage: #imageLiteral(resourceName: "popcorn"))
+
+                     }
+               else {
+                   tableView.restore()
+               }
+               return trailersArr.count
+
+           }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
@@ -180,13 +189,27 @@ extension MovieDetailsVC : UITableViewDelegate,UITableViewDataSource
     }
 }
     
-    extension MovieDetailsVC : UICollectionViewDelegate,UICollectionViewDataSource
+extension MovieDetailsVC : UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout
     {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return reviewArr.count
+        if reviewArr.isEmpty
+        {
+            collectionView.setEmptyMessage("No reviews found")
+               }
+        else
+        {
+                   collectionView.restore()
+               
+        }
+       
+      return reviewArr.count
+
+                  
     }
     
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
          guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "reviewCell", for: indexPath) as? ReviewCell else
                {
                    print("can't get")
@@ -200,6 +223,7 @@ extension MovieDetailsVC : UITableViewDelegate,UITableViewDataSource
     
         return cell
     }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
     {
         return CGSize(width: 374, height: 130)
