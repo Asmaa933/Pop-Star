@@ -17,6 +17,9 @@ class FavoriteVC: UIViewController,UITabBarControllerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         favTable.tableFooterView = UIView()
+        let nib = UINib(nibName: "favoriteCell", bundle: nil)
+        favTable.register(nib, forCellReuseIdentifier: "favCell")
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {

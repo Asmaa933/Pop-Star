@@ -31,8 +31,6 @@ class ReviewServices
                         let total_pages = dic["total_pages"].intValue
                         
                         reviewArray.append(ReviewModel(author: author, content: content, total_pages: total_pages))
-
-                        
                     }
                     completion(reviewArray,nil)
                 }catch(let error){

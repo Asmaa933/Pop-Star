@@ -31,36 +31,41 @@ class MovieDetailsVC: UIViewController {
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        self.reviewCollectionView.isPagingEnabled = true;
+       self.reviewCollectionView.isPagingEnabled = true;
+
         trailersTable.isHidden = true
         getTrailers()
         trailersTable.tableFooterView = UIView()
-
+        
     }
-
-
+    
+    
     override func viewWillAppear(_ animated: Bool)
     {
         GetMovieDetails.getMovieById(movieID: selectedMovieID) { (responseModel, error) in
-             if responseModel != nil && error == nil
-                       {
-                        self.selectedMovie = responseModel
-                                       self.updateUI()
+            if responseModel != nil && error == nil
+            {
+                self.selectedMovie = responseModel
+                self.updateUI()
             }
         }
         ReviewServices.getReviewById(movieID: selectedMovieID, pageNum: 1) { (responseModel, error) in
-                         if responseModel != nil && error == nil
-                         {
-                        
-                            self.reviewArr = responseModel!
+            if responseModel != nil && error == nil
+            {
+                
+                self.reviewArr = responseModel!
+                DispatchQueue.main.async {
+            self.reviewCollectionView.reloadData()
+
+                }
+
             }
-            DispatchQueue.main.async {
-                self.reviewCollectionView.reloadData()
-            }
+            
         }
+
         let _ = checkIsFavourite()
     }
-    
+   
     func updateUI()
     {
         
@@ -69,7 +74,7 @@ class MovieDetailsVC: UIViewController {
         releaseDateLabel.text = selectedMovie.release_date
         rateLabel.text = "\(selectedMovie.vote_average) / 10"
         overviewTxt.text = selectedMovie.overview
-        movieImg.sd_setImage(with: URL(string: "https://image.tmdb.org/t/p/w185/\(selectedMovie.poster_path)"), placeholderImage: UIImage(named: "popcorn"),completed: nil)
+        movieImg.sd_setImage(with: URL(string: "https://image.tmdb.org/t/p/w185/\(selectedMovie.poster_path)"),placeholderImage: UIImage(named: "popcorn"),completed: nil)
         starsCosmos.settings.fillMode = .precise
         starsCosmos.rating = selectedMovie.vote_average / 2
     }
@@ -79,14 +84,8 @@ class MovieDetailsVC: UIViewController {
         TrailerServices.getTrailers(movieID: selectedMovieID) { (responseModel, error) in
             if responseModel != nil && error == nil
             {
-                for i in 0..<responseModel!.count
-                {
-                    if responseModel![i].site == "YouTube" && responseModel![i].type == "Trailer"
-                    {
-                        self.trailersArr.append(responseModel![i])
-                    }
-                }
-              
+                self.trailersArr = responseModel!
+
             }
             self.trailersTable.isHidden = false
             self.trailersTable.reloadData()
@@ -112,7 +111,7 @@ class MovieDetailsVC: UIViewController {
     
     @IBAction func addToFavBtnPressed(_ sender: UIButton)
     {
-         coreMovie = checkIsFavourite()
+        coreMovie = checkIsFavourite()
         if isFavourite
         {
             showAlertView(message: "Are you sure want to delete movie from favourites")
@@ -137,15 +136,15 @@ class MovieDetailsVC: UIViewController {
         let action1 = UIAlertAction(title: "Delete", style: .destructive) { (action) in
             let _ = CoreDataHandler.deleteObjectFromCoreData(movieItem: self.coreMovie[0]) ?? []
             self.favouriteBtn.setTitle("+  Add to favourites", for: .normal)
-
+            
         }
         let action2 = UIAlertAction(title: "Cancel", style: .default) { (action) in
             self.dismiss(animated: true, completion: nil)
         }
-       alert.addAction(action1)
+        alert.addAction(action1)
         alert.addAction(action2)
-
-       self.present(alert, animated: true, completion: nil)
+        
+        self.present(alert, animated: true, completion: nil)
     }
 }
 
@@ -154,15 +153,15 @@ extension MovieDetailsVC : UITableViewDelegate,UITableViewDataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         if trailersArr.isEmpty{
-           tableView.setEmptyView(title: "No trailers found", message: "", messageImage: #imageLiteral(resourceName: "popcorn"))
-
-                     }
-               else {
-                   tableView.restore()
-               }
-               return trailersArr.count
-
-           }
+            tableView.setEmptyView(title: "No trailers found", message: "", messageImage: #imageLiteral(resourceName: "popcorn"))
+            
+        }
+        else {
+            tableView.restore()
+        }
+        return trailersArr.count
+        
+    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
@@ -188,46 +187,42 @@ extension MovieDetailsVC : UITableViewDelegate,UITableViewDataSource
         present(safariVC, animated: true)
     }
 }
-    
-extension MovieDetailsVC : UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout
-    {
+
+extension MovieDetailsVC : UICollectionViewDelegate,UICollectionViewDataSource
+{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if reviewArr.isEmpty
         {
             collectionView.setEmptyMessage("No reviews found")
-               }
+        }
         else
         {
-                   collectionView.restore()
-               
+            collectionView.restore()
+            
         }
-       
-      return reviewArr.count
-
-                  
+        
+        return reviewArr.count
+        
+        
     }
     
-    
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "reviewCell", for: indexPath) as? ReviewCell else
-               {
-                   print("can't get")
-                   return UICollectionViewCell()
-               }
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "reviewCell", for: indexPath) as? ReviewCell else
+        {
+            print("can't get")
+            return UICollectionViewCell()
+        }
         
-           
-               cell.autherLabel.text = self.reviewArr[indexPath.row].author
-                cell.reviewText.text =  self.reviewArr[indexPath.row].content
-                
-    
+        print(self.reviewArr[indexPath.row].author)
+        cell.autherLabel.text = self.reviewArr[indexPath.row].author
+        cell.reviewText.text =  self.reviewArr[indexPath.row].content
+        
+        
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
-    {
-        return CGSize(width: 374, height: 130)
-    }
-
-
+    
+    
 }

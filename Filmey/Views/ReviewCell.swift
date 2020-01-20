@@ -13,9 +13,6 @@ class ReviewCell: UICollectionViewCell {
     
     @IBOutlet weak var reviewText: UITextView!
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
+  
 
 }

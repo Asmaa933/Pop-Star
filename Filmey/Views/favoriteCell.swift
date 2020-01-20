@@ -1,5 +1,5 @@
 //
-//  favouriteCell.swift
+//  favoriteCell.swift
 //  Filmey
 //
 //  Created by Asmaa Tarek on 1/6/2019.
