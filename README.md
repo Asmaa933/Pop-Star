@@ -18,10 +18,10 @@ iOS Application (Swift)
 </div>
 
 ## Build with
-- Swift
-- Alamofire: for HTTP networking
-- SwiftyJSON: Parsing JSON
-- CoreData: Saving Favourite movies
-- RevealingSplashView: Showing splash screen
-- SDWebImage: show image from URL 
-- Cosmos: show rate in stars 
+- Swift.
+- Alamofire: for HTTP networking.
+- SwiftyJSON: Parsing JSON.
+- CoreData: Saving Favourite movies.
+- RevealingSplashView: Showing splash screen.
+- SDWebImage: Show image from URL. 
+- Cosmos: Show rate in stars. 
