@@ -1,4 +1,4 @@
-# Filmey
+# Pop Star
 iOS Application (Swift)
 
 ## About Application
