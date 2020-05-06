@@ -22,7 +22,6 @@ class CoreDataHandler
         let context = CoreDataHandler.getCoreDataobject()
         do{
             try context.save()
-            print("Saved")
         } catch {
             print("error in saving")
         }
@@ -34,8 +33,6 @@ class CoreDataHandler
         do
         {
             movies = try context.fetch(FavoriteMovies.fetchRequest())
-            print("fetched")
-            
         }
         catch
         {
@@ -50,7 +47,6 @@ class CoreDataHandler
         do
         {
             try context.save()
-            print("deleted")
         }
         catch
         {

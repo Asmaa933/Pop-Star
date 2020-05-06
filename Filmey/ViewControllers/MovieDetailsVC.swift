@@ -67,9 +67,7 @@ class MovieDetailsVC: UIViewController {
     }
    
     func updateUI()
-    {
-        
-        
+    {        
         movieTitleLabel.text = selectedMovie.original_title
         releaseDateLabel.text = selectedMovie.release_date
         rateLabel.text = "\(selectedMovie.vote_average) / 10"

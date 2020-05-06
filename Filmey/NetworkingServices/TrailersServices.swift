@@ -21,33 +21,32 @@ class TrailerServices
             case .success:
                 guard let data = response.data else {return}
                 do{                    
-                     let json = try JSON(data: data)
-                     let result = json["results"]
-                            for item in 0..<result.count
-                            {
-                            let dic = result[item]
-                            let name = dic["name"].stringValue
-                            let key = dic["key"].stringValue
-                            let site = dic["site"].stringValue
-                            let type = dic["type"].stringValue
-                            
-                            trailers.append(TrailerData(name: name, key: key, site: site, type: type))
-                        }
+                    let json = try JSON(data: data)
+                    let result = json["results"]
+                    for item in 0..<result.count
+                    {
+                        let dic = result[item]
+                        let name = dic["name"].stringValue
+                        let key = dic["key"].stringValue
+                        let site = dic["site"].stringValue
+                        let type = dic["type"].stringValue
                         
-                    
-                        
-                        completion(trailers,nil)
-                    
-            } catch(let error){
-                        print(error.localizedDescription)
+                        trailers.append(TrailerData(name: name, key: key, site: site, type: type))
                     }
                     
-                    case .failure(let error):
-                    completion(nil,error)
-                    print(error.localizedDescription)
                     
+                    completion(trailers,nil)
+                    
+                } catch(let error){
+                    print(error.localizedDescription)
                 }
+                
+            case .failure(let error):
+                completion(nil,error)
+                print(error.localizedDescription)
+                
             }
         }
-        
+    }
+    
 }

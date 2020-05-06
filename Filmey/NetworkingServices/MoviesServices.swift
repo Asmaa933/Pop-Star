@@ -40,63 +40,59 @@ class MoviesServices
         }
         if Reachability.isConnectedToNetwork()
         {
-        let parameters : [String:Any] = ["api_key": apiKey , "language" : "en-US","page" : pageNum]
-        Alamofire.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default, headers: nil).validate().responseJSON{(response) in
-            switch response.result{
-            case .success:
-                guard let data = response.data else {return}
-                do
-                {
-                    let json = try JSON(data: data)
-                    let result = json["results"]
-                    for item in 0..<result.count
+            let parameters : [String:Any] = ["api_key": apiKey , "language" : "en-US","page" : pageNum]
+            Alamofire.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default, headers: nil).validate().responseJSON{(response) in
+                switch response.result{
+                case .success:
+                    guard let data = response.data else {return}
+                    do
                     {
-                        let dic = result[item]
-                        let original_title = dic["original_title"].stringValue
-                        let poster_path = dic["poster_path"].stringValue
-                        let overview = dic["overview"].stringValue
-                        let release_date = dic["release_date"].stringValue
-                        let vote_average = dic["vote_average"].doubleValue
-                        let id = dic["id"].intValue
-                       if (original_title != "" && poster_path != "" && overview != "" && release_date != "" && vote_average != 0 && id != 0)
-                       {
-                        switch array
+                        let json = try JSON(data: data)
+                        let result = json["results"]
+                        for item in 0..<result.count
                         {
-                                
-                        case .now:
-                            MoviesServices.nowPlayingArr.append(MovieModel(original_title: original_title, poster_path: poster_path, overview: overview, release_date: release_date, vote_average: vote_average, id: id))
-                            completion(MoviesServices.nowPlayingArr,nil)
-                            
-                        case .top:
-                            MoviesServices.topRatedArr.append(MovieModel(original_title: original_title, poster_path: poster_path, overview: overview, release_date: release_date, vote_average: vote_average, id: id))
-                            completion(MoviesServices.topRatedArr,nil)
-                            
-                            
-                        case .most:
-                            MoviesServices.mostPopularArr.append(MovieModel(original_title: original_title, poster_path: poster_path, overview: overview, release_date: release_date, vote_average: vote_average, id: id))
-                            completion(MoviesServices.mostPopularArr,nil)
-                            
+                            let dic = result[item]
+                            let original_title = dic["original_title"].stringValue
+                            let poster_path = dic["poster_path"].stringValue
+                            let overview = dic["overview"].stringValue
+                            let release_date = dic["release_date"].stringValue
+                            let vote_average = dic["vote_average"].doubleValue
+                            let id = dic["id"].intValue
+                            if (original_title != "" && poster_path != "" && overview != "" && release_date != "" && vote_average != 0 && id != 0)
+                            {
+                                switch array
+                                {
+                                    
+                                case .now:
+                                    MoviesServices.nowPlayingArr.append(MovieModel(original_title: original_title, poster_path: poster_path, overview: overview, release_date: release_date, vote_average: vote_average, id: id))
+                                    completion(MoviesServices.nowPlayingArr,nil)
+                                    
+                                case .top:
+                                    MoviesServices.topRatedArr.append(MovieModel(original_title: original_title, poster_path: poster_path, overview: overview, release_date: release_date, vote_average: vote_average, id: id))
+                                    completion(MoviesServices.topRatedArr,nil)
+                                    
+                                    
+                                case .most:
+                                    MoviesServices.mostPopularArr.append(MovieModel(original_title: original_title, poster_path: poster_path, overview: overview, release_date: release_date, vote_average: vote_average, id: id))
+                                    completion(MoviesServices.mostPopularArr,nil)
+                                    
+                                }
+                            }
                         }
                     }
+                    catch(let error){
+                        print(error.localizedDescription)
                     }
-                }
-                catch(let error){
+                    
+                case .failure(let error):
+                    completion(nil,error)
                     print(error.localizedDescription)
+                    
                 }
-                
-            case .failure(let error):
-                completion(nil,error)
-                print(error.localizedDescription)
-                
             }
         }
+        
     }
-        else
-        {
-            print("hhh")
-        }
     
-}
-
 }
 
