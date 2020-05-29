@@ -9,10 +9,13 @@
 import UIKit
 
 class ReviewCell: UICollectionViewCell {
-    @IBOutlet weak var autherLabel: UILabel!
+    @IBOutlet weak private var autherLabel: UILabel!
     
-    @IBOutlet weak var reviewText: UITextView!
+    @IBOutlet weak private var reviewText: UITextView!
     
-  
+    func configureCell(auther: String, review: String) {
+        autherLabel.text = auther
+        reviewText.text = review
+    }
 
 }

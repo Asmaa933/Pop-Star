@@ -9,15 +9,13 @@
 import Foundation
 import Alamofire
 import SwiftyJSON
-class MoviesServices
-{
+
+class MoviesServices{
     static private(set) var nowPlayingArr = [MovieModel]()
     static private(set) var topRatedArr = [MovieModel]()
     static private(set) var mostPopularArr = [MovieModel]()    
-    static func resetArray(arr: arrays)
-    {
-        switch arr
-        {
+    static func resetArray(arr: arrays){
+        switch arr{
         case .top:
             MoviesServices.topRatedArr.removeAll()
         case .most:
@@ -26,11 +24,9 @@ class MoviesServices
             MoviesServices.nowPlayingArr.removeAll()
         }
     }
-    class  func getMovies(pageNum: Int, array: arrays,completion: @escaping (_ jsonData: [MovieModel]?,_ error:Error?) -> Void)
-    {
+    class  func getMovies(pageNum: Int, array: arrays,completion: @escaping (_ jsonData: [MovieModel]?,_ error:Error?) -> Void){
         var url = ""
-        switch array
-        {
+        switch array{
         case .now:
             url = nowPlayingURL
         case .top:
@@ -38,61 +34,57 @@ class MoviesServices
         case .most:
             url = mostPopularURL
         }
-        if Reachability.isConnectedToNetwork()
-        {
+        if Reachability.isConnectedToNetwork(){
             let parameters : [String:Any] = ["api_key": apiKey , "language" : "en-US","page" : pageNum]
             Alamofire.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default, headers: nil).validate().responseJSON{(response) in
                 switch response.result{
                 case .success:
                     guard let data = response.data else {return}
-                    do
-                    {
-                        let json = try JSON(data: data)
-                        let result = json["results"]
-                        for item in 0..<result.count
-                        {
-                            let dic = result[item]
-                            let original_title = dic["original_title"].stringValue
-                            let poster_path = dic["poster_path"].stringValue
-                            let overview = dic["overview"].stringValue
-                            let release_date = dic["release_date"].stringValue
-                            let vote_average = dic["vote_average"].doubleValue
-                            let id = dic["id"].intValue
-                            if (original_title != "" && poster_path != "" && overview != "" && release_date != "" && vote_average != 0 && id != 0)
-                            {
-                                switch array
-                                {
-                                    
-                                case .now:
-                                    MoviesServices.nowPlayingArr.append(MovieModel(original_title: original_title, poster_path: poster_path, overview: overview, release_date: release_date, vote_average: vote_average, id: id))
-                                    completion(MoviesServices.nowPlayingArr,nil)
-                                    
-                                case .top:
-                                    MoviesServices.topRatedArr.append(MovieModel(original_title: original_title, poster_path: poster_path, overview: overview, release_date: release_date, vote_average: vote_average, id: id))
-                                    completion(MoviesServices.topRatedArr,nil)
-                                    
-                                    
-                                case .most:
-                                    MoviesServices.mostPopularArr.append(MovieModel(original_title: original_title, poster_path: poster_path, overview: overview, release_date: release_date, vote_average: vote_average, id: id))
-                                    completion(MoviesServices.mostPopularArr,nil)
-                                    
-                                }
-                            }
-                        }
+                    parseJSON(data: data, array: array)
+                    switch array{
+                    case .now:
+                        completion(MoviesServices.nowPlayingArr,nil)
+                    case .top:
+                        completion(MoviesServices.topRatedArr,nil)
+                    case .most:
+                        completion(MoviesServices.mostPopularArr,nil)
                     }
-                    catch(let error){
-                        print(error.localizedDescription)
-                    }
-                    
                 case .failure(let error):
                     completion(nil,error)
                     print(error.localizedDescription)
-                    
                 }
             }
         }
-        
     }
     
+    private class func parseJSON (data: Data, array: arrays){
+        do{
+            let json = try JSON(data: data)
+            let result = json["results"]
+            for item in 0..<result.count{
+                let dic = result[item]
+                let original_title = dic["original_title"].stringValue
+                let poster_path = dic["poster_path"].stringValue
+                let overview = dic["overview"].stringValue
+                let release_date = dic["release_date"].stringValue
+                let vote_average = dic["vote_average"].doubleValue
+                let id = dic["id"].intValue
+                if (original_title != "" && poster_path != "" && overview != "" && release_date != "" && vote_average != 0 && id != 0){
+                    switch array{
+                    case .now:
+                        MoviesServices.nowPlayingArr.append(MovieModel(original_title: original_title, poster_path: poster_path, overview: overview, release_date: release_date, vote_average: vote_average, id: id))
+                        
+                    case .top:
+                        MoviesServices.topRatedArr.append(MovieModel(original_title: original_title, poster_path: poster_path, overview: overview, release_date: release_date, vote_average: vote_average, id: id))
+                        
+                        
+                    case .most:
+                        MoviesServices.mostPopularArr.append(MovieModel(original_title: original_title, poster_path: poster_path, overview: overview, release_date: release_date, vote_average: vote_average, id: id))
+                    }
+                }
+            }
+        }catch(let error){
+            print(error.localizedDescription)
+        }
+    }
 }
-

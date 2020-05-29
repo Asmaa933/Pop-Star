@@ -12,42 +12,35 @@ import RevealingSplashView
 class HomeVC: UIViewController,UITabBarControllerDelegate{
     
     
-    @IBOutlet weak var changeView: UIView!
-    @IBOutlet weak var collectionView: UICollectionView!
-    @IBOutlet weak var nowPlayingBtn: UIButton!
-    @IBOutlet weak var mostPopularBtn: UIButton!
-    @IBOutlet weak var topRatedBtn: UIButton!
+    @IBOutlet weak private var changeView: UIView!
+    @IBOutlet weak private var collectionView: UICollectionView!
+    @IBOutlet weak private var nowPlayingBtn: UIButton!
+    @IBOutlet weak private var mostPopularBtn: UIButton!
+    @IBOutlet weak private var topRatedBtn: UIButton!
     
-    var nowPlayingArr = [MovieModel]()
-    var topRatedArr = [MovieModel]()
-    var mostPopularArr  = [MovieModel]()
-    var movieID = 0
-    var renderedArr: arrays = .now
-    var nowCounter = 1
-    var topCounter = 1
-    var mostCounter = 1
-    var arr = [MovieModel]()
-    var alertCounter = 0
-    var imageView = UIImageView()
-    override func viewDidLoad()
-    {
+    private var nowPlayingArr = [MovieModel]()
+    private  var topRatedArr = [MovieModel]()
+    private var mostPopularArr  = [MovieModel]()
+    private var movieID = 0
+    private var renderedArr: arrays = .now
+    private var nowCounter = 1
+    private var topCounter = 1
+    private var mostCounter = 1
+    private var arr = [MovieModel]()
+    private var alertCounter = 0
+    private var imageView = UIImageView()
+    
+    override func viewDidLoad(){
         super.viewDidLoad()
         self.tabBarController?.tabBar.isHidden = true
         self.navigationController?.navigationBar.isHidden = true
         splashScreenShower()
-        
-        
     }
     
-    func checkReachability()
-    {
-        
-        if Reachability.isConnectedToNetwork()
-        {
-            
+    private func checkReachability(){
+        if Reachability.isConnectedToNetwork(){
             imageView.removeFromSuperview()
-            switch renderedArr
-            {
+            switch renderedArr{
             case .now:
                 getNowPlaying()
             case .top:
@@ -55,21 +48,16 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
             case .most:
                 mostPopularBtnPressed()
             }
-                self.navigationController?.navigationBar.isHidden = false
-                self.tabBarController?.tabBar.isHidden = false
-                alertCounter = 0
-            
-        }else
-            {
-                if alertCounter == 0
-                {
-                    showAlertView(message: "Check internet connection")
-                    
-                }
+            self.navigationController?.navigationBar.isHidden = false
+            self.tabBarController?.tabBar.isHidden = false
+            alertCounter = 0
+        }else{
+            if alertCounter == 0{
+                showAlertView(message: "Check internet connection")
+            }
         }
     }
-    func handleNoInternet()
-    {
+    private func handleNoInternet(){
         imageView = UIImageView(frame: CGRect(x: 50, y: 100, width: 300, height: 300))
         imageView.center = view.center
         imageView.layer.cornerRadius = 10
@@ -81,66 +69,57 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
         self.view.addGestureRecognizer(downSwipe)
         checkReachability()
     }
-    @objc func gestureRecognizer()
-    {
+    @objc private func gestureRecognizer(){
         alertCounter = 0
         checkReachability()
     }
     
-    func splashScreenShower()
-    {
+    private func splashScreenShower(){
         MoviesServices.resetArray(arr: .now)
         let revealingSplashView = RevealingSplashView(iconImage: UIImage(named: "1")!,iconInitialSize: CGSize(width: 70, height: 70), backgroundColor: UIColor(red:0.11, green:0.56, blue:0.95, alpha:1.0))
         revealingSplashView.animationType = SplashAnimationType.swingAndZoomOut
         self.view.addSubview(revealingSplashView)
-        revealingSplashView.startAnimation()
-            {
-                
-                self.checkReachability()
-                
+        revealingSplashView.startAnimation(){
+            
+            self.checkReachability()
+            
         }
     }
-    override func viewWillAppear(_ animated: Bool)
-    {
+    override func viewWillAppear(_ animated: Bool){
         
         collectionView.reloadData()
     }
     
-    func getNowPlaying()
-    {
+    private func getNowPlaying(){
         topCounter = 1
         mostCounter = 1
-        MoviesServices.getMovies(pageNum: nowCounter, array: .now) { (responseModel, error) in
-            if responseModel != nil && error == nil
-            {
+        MoviesServices.getMovies(pageNum: nowCounter, array: .now) {[weak self] (responseModel, error) in
+            guard let self = self else {return}
+            if responseModel != nil && error == nil{
                 self.renderedArr = .now
                 self.nowPlayingArr = responseModel!
             }
-            DispatchQueue.main.async
-                {
-                    MoviesServices.resetArray(arr: .top)
-                    MoviesServices.resetArray(arr: .most)
-                    
-                    self.mostPopularArr = []
-                    self.topRatedArr = []
-                    self.navigationController?.navigationBar.topItem?.title = "Now Playing"
-                    self.collectionView.reloadData()
+            DispatchQueue.main.async{
+                MoviesServices.resetArray(arr: .top)
+                MoviesServices.resetArray(arr: .most)
+                
+                self.mostPopularArr = []
+                self.topRatedArr = []
+                self.navigationController?.navigationBar.topItem?.title = "Now Playing"
+                self.collectionView.reloadData()
             }
         }
     }
     
-    @IBAction func barBtnPressed(_ sender: UIBarButtonItem)
-    {
+    @IBAction private func barBtnPressed(_ sender: UIBarButtonItem){
         changeView.isHidden = !changeView.isHidden
         
     }
     
-    @IBAction func nowPlayingBtnTapped(_ sender: UIButton)
-    {
-        if(nowCounter==1)
-        {
+    @IBAction private func nowPlayingBtnTapped(_ sender: UIButton){
+        if(nowCounter==1){
             self.collectionView?.scrollToItem(at: IndexPath(row: 0, section: 0),at: .top,animated: true)
-
+            
         }
         nowPlayingBtn.isHidden = true
         topRatedBtn.isHidden = false
@@ -149,106 +128,93 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
         getNowPlaying()
     }
     
-    @IBAction func topRatedBtnPressed()
-    {
+    @IBAction private func topRatedBtnPressed(){
         nowCounter = 1
         mostCounter = 1
-        if(topCounter==1)
-              {
-                  self.collectionView?.scrollToItem(at: IndexPath(row: 0, section: 0),at: .top,animated: true)
-
-              }
+        if(topCounter==1){
+            self.collectionView?.scrollToItem(at: IndexPath(row: 0, section: 0),at: .top,animated: true)
+            
+        }
         nowPlayingBtn.isHidden = false
         topRatedBtn.isHidden = true
         mostPopularBtn.isHidden = false
         changeView.isHidden = true
-        MoviesServices.getMovies(pageNum: topCounter, array: .top) { (responseModel, error) in
-            if responseModel != nil && error == nil
-            {
+        MoviesServices.getMovies(pageNum: topCounter, array: .top) {[weak self] (responseModel, error) in
+            guard let self = self else {return}
+            if responseModel != nil && error == nil{
                 self.renderedArr = .top
                 self.topRatedArr = responseModel!
                 DispatchQueue.main.async {
-                    
                     MoviesServices.resetArray(arr: .now)
                     MoviesServices.resetArray(arr: .most)
                     self.nowPlayingArr = []
                     self.mostPopularArr = []
-                    
                     self.navigationController?.navigationBar.topItem?.title = "Top Rated"
-                    
                     self.collectionView.reloadData()
                     
                 }
             }
         }
     }
-    @IBAction func mostPopularBtnPressed() {
+    @IBAction private func mostPopularBtnPressed() {
         nowCounter = 1
         topCounter = 1
-        if(mostCounter==1)
-              {
-                  self.collectionView?.scrollToItem(at: IndexPath(row: 0, section: 0),at: .top,animated: true)
-
-              }
+        if(mostCounter==1){
+            self.collectionView?.scrollToItem(at: IndexPath(row: 0, section: 0),at: .top,animated: true)
+        }
         nowPlayingBtn.isHidden = false
         topRatedBtn.isHidden = false
         mostPopularBtn.isHidden = true
         changeView.isHidden = true
         
-        MoviesServices.getMovies(pageNum: mostCounter, array: .most) { (responseModel, error) in
-            if responseModel != nil && error == nil
-            {
+        MoviesServices.getMovies(pageNum: mostCounter, array: .most) { [weak self] (responseModel, error) in
+            guard let self = self else {return}
+            if responseModel != nil && error == nil{
                 self.renderedArr = .most
                 self.mostPopularArr = responseModel!
-                DispatchQueue.main.async
-                    {
-                        MoviesServices.resetArray(arr: .now)
-                        MoviesServices.resetArray(arr: .top)
-                        self.nowPlayingArr = []
-                        self.topRatedArr = []
-                        
-                        self.navigationController?.navigationBar.topItem?.title = "Most Popular"
-                        
-                        self.collectionView.reloadData()
-                        
+                DispatchQueue.main.async{
+                    MoviesServices.resetArray(arr: .now)
+                    MoviesServices.resetArray(arr: .top)
+                    self.nowPlayingArr = []
+                    self.topRatedArr = []
+                    self.navigationController?.navigationBar.topItem?.title = "Most Popular"
+                    self.collectionView.reloadData()
                 }
             }
         }
         
     }
     
-    func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem)
-    {
+    func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem){
         self.viewWillAppear(true)
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
-    {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?){
         if (segue.identifier == "movieSegue")
         {
             if let detail = segue.destination as? MovieDetailsVC
             {
                 detail.selectedMovieID = movieID
+                
             }
         }
     }
     
-    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController)
-    {
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController){
         viewWillAppear(true)
     }
-    func showAlertView(message: String)
-    {
+   private func showAlertView(message: String){
         alertCounter += 1;
         let alert = UIAlertController(title: "Alert", message: message, preferredStyle: .alert)
-        let action1 = UIAlertAction(title: "ok", style: .default) { (action) in
+        let action1 = UIAlertAction(title: "ok", style: .default) {[weak self] (action) in
+            guard let self =  self else {return}
             self.dismiss(animated: true, completion: nil)
             self.handleNoInternet()
             
         }
-        let action2 = UIAlertAction(title: "Try again ", style: .default) { (action) in
+        let action2 = UIAlertAction(title: "Try again ", style: .default) { [weak self] (action) in
+            guard let self =  self else {return}
             self.alertCounter = 0;
-
             self.checkReachability()
             
         }
@@ -259,11 +225,8 @@ class HomeVC: UIViewController,UITabBarControllerDelegate{
     }
 }
 
-extension HomeVC : UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout
-{
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
-    {
-        
+extension HomeVC : UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout{
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int{
         switch renderedArr {
         case .now:
             arr = nowPlayingArr
@@ -279,24 +242,21 @@ extension HomeVC : UICollectionViewDelegate,UICollectionViewDataSource,UICollect
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? moviesCell else
-        {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? moviesCell else{
             print("can't get")
             return UICollectionViewCell()
         }
-        cell.configureCell(poster_path: arr[indexPath.row].poster_path)
+        cell.configureCell(poster_path: arr[indexPath.row].getPoster_path())
         
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
-    {
-        movieID = arr[indexPath.row].id
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath){
+        movieID = arr[indexPath.row].getID()
         performSegue(withIdentifier: "movieSegue", sender: nil)
     }
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if indexPath.row == arr.count - 1
-        {
+        if indexPath.row == arr.count - 1{
             switch renderedArr {
             case .now:
                 if nowCounter <= nowPlayingMaxPage
@@ -321,17 +281,14 @@ extension HomeVC : UICollectionViewDelegate,UICollectionViewDataSource,UICollect
             }
         }
     }
-   
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize
-    {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize{
         return CGSize(width: CGFloat((collectionView.frame.size.width / 2) - 10 ), height: (collectionView.frame.size.height / 2 ) - 50)
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets
-    {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets{
         return UIEdgeInsets(top: 5,left: 5,bottom: 5,right: 5)
     }
-    
 }
 
 

@@ -16,8 +16,7 @@ let nowPlayingMaxPage = 60
 let topRatedMaxPage = 339
 let mostPopularMaxPage = 500
 
-enum arrays
-{
+enum arrays{
     case top
     case most
     case now

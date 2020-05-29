@@ -7,11 +7,18 @@
 //
 
 import UIKit
+import SDWebImage
 
-class favoriteCell: UITableViewCell
-{
-    @IBOutlet weak var movieImg: UIImageView!
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var releaseLabel: UILabel!
-    @IBOutlet weak var rateLabel: UILabel!
+class favoriteCell: UITableViewCell{
+    @IBOutlet weak private var movieImg: UIImageView!
+    @IBOutlet weak private var titleLabel: UILabel!
+    @IBOutlet weak private var releaseLabel: UILabel!
+    @IBOutlet weak private var rateLabel: UILabel!
+    
+    func configureCell(imageURL: String, title: String, release: String, rate: String) {
+        movieImg.sd_setImage(with: URL(string: imageURL), placeholderImage: #imageLiteral(resourceName: "popcorn"),completed: nil)
+        titleLabel.text = title
+        releaseLabel.text = release
+        rateLabel.text = rate
+    }
 }

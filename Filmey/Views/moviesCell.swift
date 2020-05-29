@@ -9,11 +9,10 @@
 import UIKit
 import SDWebImage
 
-class moviesCell: UICollectionViewCell
-{
-    @IBOutlet weak var movieImg: UIImageView!
-    func configureCell(poster_path : String)
-    {
+class moviesCell: UICollectionViewCell{
+    @IBOutlet weak private var movieImg: UIImageView!
+    
+    func configureCell(poster_path : String){
         layer.backgroundColor = UIColor.clear.cgColor
         contentView.layer.cornerRadius = 15
         contentView.layer.borderWidth = 0.5

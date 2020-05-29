@@ -7,12 +7,12 @@
 //
 
 import Foundation
-class TrailerData
-{
-    var name : String
-    var key : String
-    var site : String
-    var type : String
+
+struct TrailerData{
+   private var name : String
+   private var key : String
+   private var site : String
+   private var type : String
     
     init(name : String, key : String, site : String, type : String)
     {
@@ -21,4 +21,16 @@ class TrailerData
          self.site = site
          self.type = type
     }
+    func getName() -> String{
+        return name
+    }
+    func getKey() -> String{
+           return key
+       }
+    func getSite() -> String{
+           return site
+       }
+    func getType() -> String{
+           return type
+       }
 }
