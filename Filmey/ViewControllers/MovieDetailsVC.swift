@@ -31,8 +31,8 @@ class MovieDetailsVC: UIViewController {
     override func viewDidLoad()
     {
         super.viewDidLoad()
-       self.reviewCollectionView.isPagingEnabled = true;
-
+       self.reviewCollectionView.isPagingEnabled = true
+        favouriteBtn.titleLabel?.adjustsFontSizeToFitWidth = true
         trailersTable.isHidden = true
         getTrailers()
         trailersTable.tableFooterView = UIView()
