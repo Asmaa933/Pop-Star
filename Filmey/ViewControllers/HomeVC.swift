@@ -283,7 +283,9 @@ extension HomeVC : UICollectionViewDelegate,UICollectionViewDataSource,UICollect
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize{
-        return CGSize(width: CGFloat((collectionView.frame.size.width / 2) - 10 ), height: (collectionView.frame.size.height / 2 ) - 50)
+        let width = UIScreen.main.bounds.width
+        let height = UIScreen.main.bounds.height
+        return CGSize(width: width/2.2, height: height/4)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets{

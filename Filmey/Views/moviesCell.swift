@@ -19,11 +19,11 @@ class moviesCell: UICollectionViewCell{
         contentView.layer.borderColor = UIColor.clear.cgColor
         contentView.layer.masksToBounds = true;
 
-        layer.backgroundColor = #colorLiteral(red: 0.4620226622, green: 0.8382837176, blue: 1, alpha: 1)
+        layer.backgroundColor = #colorLiteral(red: 0.4666666687, green: 0.7647058964, blue: 0.2666666806, alpha: 1)
         layer.shadowOffset = CGSize(width:0,height: 2.0)
         layer.shadowRadius = 5
         layer.shadowOpacity = 1.0
-        layer.masksToBounds = false;
+        layer.masksToBounds = true
         layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: contentView.layer.cornerRadius).cgPath
         movieImg.sd_setImage(with: URL(string: "https://image.tmdb.org/t/p/w185/\(poster_path)"), placeholderImage: UIImage(named: "popcorn"),completed: nil)
     }

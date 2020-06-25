@@ -6,7 +6,7 @@ target 'Filmey' do
   use_frameworks!
 
   # Pods for Filmey
-pod 'Alamofire'
+pod 'Alamofire', '~> 4.9'
 pod 'SwiftyJSON'
 pod 'RevealingSplashView'
 pod 'SDWebImage'
