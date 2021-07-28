@@ -158,6 +158,7 @@ extension MovieDetailsVC: UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath){
         guard let url = URL(string: "https://www.youtube.com/watch?v=\(trailersArr[indexPath.row].getKey())") else {return}
         let safariVC = SFSafariViewController(url: url)
+        safariVC.modalPresentationStyle = .popover
         present(safariVC, animated: true)
     }
 }
